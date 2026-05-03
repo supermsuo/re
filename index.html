@@ -1,0 +1,2250 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔐 智能密码工具箱 · 专业版 v9.0</title>
+    
+    <!-- 外部CSS文件 -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/theme.css">
+    
+    <!-- Font Awesome 图标 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- 代码高亮 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- 顶部导航栏 -->
+        <header class="app-header">
+            <div class="header-left">
+                <div class="logo">
+                    <i class="fas fa-lock"></i>
+                    <h1>智能密码工具箱</h1>
+                    <span class="version-badge">v9.0</span>
+                </div>
+                <p class="subtitle">CTF解题 · 密码分析 · AI识别 · 专业工具套件</p>
+            </div>
+            
+            <div class="header-right">
+                <div class="header-controls">
+                    <button class="btn btn-icon" id="themeToggle" title="切换主题">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <button class="btn btn-icon" id="helpBtn" title="帮助文档">
+                        <i class="fas fa-question-circle"></i>
+                    </button>
+                    <button class="btn btn-icon" id="settingsBtn" title="设置">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                    <button class="btn btn-primary" id="exportBtn">
+                        <i class="fas fa-download"></i> 导出
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- 状态栏 -->
+        <div class="status-bar">
+            <div class="status-items">
+                <div class="status-item">
+                    <i class="fas fa-font"></i>
+                    <span>字符: <strong id="charCount">0</strong></span>
+                </div>
+                <div class="status-item">
+                    <i class="fas fa-bolt"></i>
+                    <span>类型: <strong id="detectType">未知</strong></span>
+                </div>
+                <div class="status-item">
+                    <i class="fas fa-history"></i>
+                    <span>历史: <strong id="historyCount">0</strong></span>
+                </div>
+                <div class="status-item">
+                    <i class="fas fa-clock"></i>
+                    <span>状态: <strong id="processStatus">就绪</strong></span>
+                </div>
+                <div class="status-item">
+                    <i class="fas fa-microchip"></i>
+                    <span>内存: <strong id="memoryUsage">0 MB</strong></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 主内容区域 -->
+        <div class="main-content">
+            <!-- 左侧输入区域 -->
+            <div class="input-section">
+                <div class="section-header">
+                    <h3><i class="fas fa-keyboard"></i> 输入处理区</h3>
+                    <div class="section-actions">
+                        <button class="btn btn-sm" id="clearInputBtn">
+                            <i class="fas fa-trash"></i> 清空
+                        </button>
+                        <button class="btn btn-sm btn-success" id="pasteBtn">
+                            <i class="fas fa-paste"></i> 粘贴
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="file-drop-zone" id="fileDropZone">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>拖拽文件到此处或点击上传</p>
+                    <p class="hint">支持: .txt, .json, .log, .md, .html, .xml</p>
+                </div>
+                
+                <div class="textarea-container">
+                    <textarea id="inputText" placeholder="请输入需要处理的文本...&#10;支持密码、编码、哈希、CTF题等&#10;快捷键: Ctrl+Enter = 快速分析"></textarea>
+                    <div class="textarea-footer">
+                        <div class="input-actions">
+                            <button class="btn btn-sm" onclick="formatInput()">
+                                <i class="fas fa-magic"></i> 格式化
+                            </button>
+                            <button class="btn btn-sm" onclick="encodeInput()">
+                                <i class="fas fa-code"></i> 编码
+                            </button>
+                            <button class="btn btn-sm" onclick="decodeInput()">
+                                <i class="fas fa-code-branch"></i> 解码
+                            </button>
+                        </div>
+                        <div class="input-info">
+                            <span id="inputInfo">0 字符</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="quick-actions">
+                    <button class="btn btn-sm btn-info" onclick="aiDetect()">
+                        <i class="fas fa-robot"></i> AI识别
+                    </button>
+                    <button class="btn btn-sm btn-warning" onclick="quickDecode()">
+                        <i class="fas fa-bolt"></i> 快速解密
+                    </button>
+                    <button class="btn btn-sm btn-danger" onclick="advancedAnalyze()">
+                        <i class="fas fa-chart-bar"></i> 深度分析
+                    </button>
+                </div>
+            </div>
+
+            <!-- 中间功能区 -->
+            <div class="function-section">
+                <!-- 标签页导航 -->
+                <div class="tabs-nav">
+                    <div class="tabs-container">
+                        <button class="tab active" data-tab="ai">
+                            <i class="fas fa-robot"></i> AI智能
+                        </button>
+                        <button class="tab" data-tab="ctf">
+                            <i class="fas fa-trophy"></i> CTF解题
+                        </button>
+                        <button class="tab" data-tab="classic">
+                            <i class="fas fa-scroll"></i> 古典密码
+                        </button>
+                        <button class="tab" data-tab="modern">
+                            <i class="fas fa-lock"></i> 现代密码
+                        </button>
+                        <button class="tab" data-tab="encode">
+                            <i class="fas fa-code"></i> 编码转换
+                        </button>
+                        <button class="tab" data-tab="hash">
+                            <i class="fas fa-fingerprint"></i> 哈希算法
+                        </button>
+                        <button class="tab" data-tab="crypto">
+                            <i class="fas fa-key"></i> 密码工具
+                        </button>
+                        <button class="tab" data-tab="stego">
+                            <i class="fas fa-user-secret"></i> 隐写分析
+                        </button>
+                        <button class="tab" data-tab="utils">
+                            <i class="fas fa-tools"></i> 实用工具
+                        </button>
+                        <button class="tab" data-tab="network">
+                            <i class="fas fa-network-wired"></i> 网络工具
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 标签页内容 -->
+                <div class="tabs-content">
+                    <!-- AI智能标签页 -->
+                    <div class="tab-pane active" id="ai-tab">
+                        <div class="tab-header">
+                            <h3><i class="fas fa-robot"></i> AI智能识别与破解</h3>
+                            <p>自动检测密码类型并提供解决方案</p>
+                        </div>
+                        
+                        <div class="ai-controls">
+                            <button class="btn btn-primary" onclick="ai.fullAnalysis()">
+                                <i class="fas fa-search"></i> 智能识别
+                            </button>
+                            <button class="btn btn-success" onclick="ai.autoDecode()">
+                                <i class="fas fa-bolt"></i> 自动破解
+                            </button>
+                            <button class="btn btn-warning" onclick="ai.deepAnalysis()">
+                                <i class="fas fa-brain"></i> 深度分析
+                            </button>
+                            <button class="btn btn-info" onclick="ai.generateReport()">
+                                <i class="fas fa-file-export"></i> 生成报告
+                            </button>
+                        </div>
+                        
+                        <div class="ai-results" id="aiResults">
+                            <div class="result-header">
+                                <h4><i class="fas fa-chart-pie"></i> 分析结果</h4>
+                            </div>
+                            <div class="result-content" id="aiResultContent">
+                                等待分析...
+                            </div>
+                        </div>
+                        
+                        <div class="ai-suggestions">
+                            <h4><i class="fas fa-lightbulb"></i> 智能建议</h4>
+                            <div class="suggestions-grid" id="aiSuggestions">
+                                <!-- 智能建议将通过JS动态生成 -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CTF解题标签页 -->
+                    <div class="tab-pane" id="ctf-tab">
+                        <div class="tab-header">
+                            <h3><i class="fas fa-trophy"></i> CTF密码挑战工具</h3>
+                            <p>CTF比赛中常见的密码类型和解题工具</p>
+                        </div>
+                        
+                        <div class="category-section">
+                            <h4><i class="fas fa-chess-board"></i> 仿射密码 (高频)</h4>
+                            <div class="controls-row">
+                                <input type="number" class="input-number" id="affineA" value="5" min="1" max="25">
+                                <span class="input-label">a</span>
+                                <input type="number" class="input-number" id="affineB" value="8" min="0" max="25">
+                                <span class="input-label">b</span>
+                                <button class="btn" onclick="ctf.affineEncrypt()">加密</button>
+                                <button class="btn" onclick="ctf.affineDecrypt()">解密</button>
+                                <button class="btn btn-warning" onclick="ctf.affineCrack()">暴力破解</button>
+                            </div>
+                        </div>
+                        
+                        <div class="category-section">
+                            <h4><i class="fas fa-mobile-alt"></i> 手机密码系列</h4>
+                            <div class="controls-row">
+                                <button class="btn" onclick="ctf.t9Encode()">
+                                    <i class="fas fa-keyboard"></i> 九键加密
+                                </button>
+                                <button class="btn" onclick="ctf.t9Decode()">
+                                    <i class="fas fa-keyboard"></i> 九键解密
+                                </button>
+                                <button class="btn" onclick="ctf.phoneWave()">
+                                    <i class="fas fa-wave-square"></i> 波形密码
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="category-section">
+                            <h4><i class="fas fa-hand-peace"></i> 特殊符号密码</h4>
+                            <div class="controls-row">
+                                <button class="btn" onclick="ctf.dangpuEncode()">当铺密码</button>
+                                <button class="btn" onclick="ctf.dangpuDecode()">当铺解密</button>
+                                <button class="btn" onclick="ctf.buddhaEncode()">佛曰加密</button>
+                                <button class="btn" onclick="ctf.buddhaDecode()">佛曰解密</button>
+                                <button class="btn" onclick="ctf.brailleEncode()">盲文加密</button>
+                                <button class="btn" onclick="ctf.brailleDecode()">盲文解密</button>
+                            </div>
+                        </div>
+                        
+                        <div class="category-section">
+                            <h4><i class="fas fa-music"></i> 音乐与图形密码</h4>
+                            <div class="controls-row">
+                                <button class="btn" onclick="ctf.musicEncode()">音符加密</button>
+                                <button class="btn" onclick="ctf.musicDecode()">音符解密</button>
+                                <button class="btn" onclick="ctf.pigpenEncode()">猪圈加密</button>
+                                <button class="btn" onclick="ctf.pigpenDecode()">猪圈解密</button>
+                                <input type="number" class="input-number" id="curveKey" value="4" min="2" max="10">
+                                <button class="btn btn-warning" onclick="ctf.curveEncode()">曲路加密</button>
+                            </div>
+                        </div>
+                        
+                        <div class="category-section">
+                            <h4><i class="fas fa-user-secret"></i> 隐写与零宽字符</h4>
+                            <div class="controls-row">
+                                <button class="btn btn-success" onclick="ctf.zeroWidthExtract()">
+                                    <i class="fas fa-search"></i> 提取零宽
+                                </button>
+                                <button class="btn btn-danger" onclick="ctf.zeroWidthEmbed()">
+                                    <i class="fas fa-eye-slash"></i> 嵌入零宽
+                                </button>
+                                <button class="btn" onclick="ctf.stegoAnalyze()">隐写分析</button>
+                                <button class="btn" onclick="ctf.whiteSpace()">空格隐写</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 古典密码模块 -->
+                    <div class="tab-pane" id="classic-tab">
+                        <div class="tab-header">
+                            <h3><i class="fas fa-scroll"></i> 古典密码模块</h3>
+                            <p>凯撒密码、维吉尼亚、栅栏密码、Atbash、ROT等古典密码工具</p>
+                        </div>
+                        
+                        <!-- 凯撒密码 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-crown"></i> 凯撒密码 (Caesar Cipher)</h4>
+                            <div class="controls-row">
+                                <input type="number" class="input-number" id="caesarShift" value="3" min="1" max="25" title="位移量">
+                                <span class="input-label">位移</span>
+                                <button class="btn btn-primary" onclick="classic.caeEn()">
+                                    <i class="fas fa-lock"></i> 加密
+                                </button>
+                                <button class="btn btn-success" onclick="classic.caeDe()">
+                                    <i class="fas fa-unlock"></i> 解密
+                                </button>
+                                <button class="btn btn-warning" onclick="classic.caeCrack()">
+                                    <i class="fas fa-search"></i> 智能破解
+                                </button>
+                                <button class="btn btn-info" onclick="classic.caeAll()">
+                                    <i class="fas fa-list"></i> 所有位移
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 维吉尼亚密码 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-chess-queen"></i> 维吉尼亚密码 (Vigenère)</h4>
+                            <div class="controls-row">
+                                <input type="text" class="input-text" id="vigenereKey" placeholder="关键词" value="KEY" title="加密密钥">
+                                <span class="input-label">密钥</span>
+                                <button class="btn btn-primary" onclick="classic.vigEn()">
+                                    <i class="fas fa-lock"></i> 加密
+                                </button>
+                                <button class="btn btn-success" onclick="classic.vigDe()">
+                                    <i class="fas fa-unlock"></i> 解密
+                                </button>
+                                <button class="btn btn-warning" onclick="classic.vigCrack()">
+                                    <i class="fas fa-search"></i> 暴力破解
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 栅栏密码 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-fence"></i> 栅栏密码 (Rail Fence)</h4>
+                            <div class="controls-row">
+                                <input type="number" class="input-number" id="railFenceRails" value="3" min="2" max="10" title="栅栏数量">
+                                <span class="input-label">栅栏数</span>
+                                <button class="btn btn-primary" onclick="classic.railEn()">
+                                    <i class="fas fa-lock"></i> 加密
+                                </button>
+                                <button class="btn btn-success" onclick="classic.railDe()">
+                                    <i class="fas fa-unlock"></i> 解密
+                                </button>
+                                <button class="btn btn-info" onclick="classic.railAll()">
+                                    <i class="fas fa-list"></i> 尝试所有
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 其他古典密码 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-tools"></i> 其他古典密码</h4>
+                            <div class="controls-row">
+                                <button class="btn" onclick="classic.atbash()">
+                                    <i class="fas fa-exchange-alt"></i> Atbash
+                                </button>
+                                <button class="btn" onclick="classic.rot13()">
+                                    <i class="fas fa-redo"></i> ROT13
+                                </button>
+                                <button class="btn" onclick="classic.rotN()">
+                                    <i class="fas fa-cogs"></i> ROT-N
+                                </button>
+                                <button class="btn" onclick="classic.morseEn()">
+                                    <i class="fas fa-wave-square"></i> 摩斯电码
+                                </button>
+                                <button class="btn" onclick="classic.morseDe()">
+                                    <i class="fas fa-text"></i> 摩斯解码
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 替换密码 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-random"></i> 替换密码 (Substitution)</h4>
+                            <div class="controls-row">
+                                <input type="text" class="input-text" id="substitutionKey" placeholder="替换表 (A=Z,B=Y...)" title="字母替换映射">
+                                <span class="input-label">密钥</span>
+                                <button class="btn btn-primary" onclick="classic.subEn()">
+                                    <i class="fas fa-lock"></i> 加密
+                                </button>
+                                <button class="btn btn-success" onclick="classic.subDe()">
+                                    <i class="fas fa-unlock"></i> 解密
+                                </button>
+                                <button class="btn btn-warning" onclick="classic.subCrack()">
+                                    <i class="fas fa-search"></i> 频率分析
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 栅栏密码模式 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-layer-group"></i> 栅栏模式切换</h4>
+                            <div class="controls-row">
+                                <select class="input-select" id="railMode">
+                                    <option value="zigzag">Z字形 (标准)</option>
+                                    <option value="spiral">螺旋形</option>
+                                    <option value="diagonal">对角线</option>
+                                </select>
+                                <span class="input-label">模式</span>
+                                <button class="btn btn-info" onclick="classic.railTest()">
+                                    <i class="fas fa-play"></i> 测试模式
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 结果展示 -->
+                        <div class="result-preview">
+                            <h4><i class="fas fa-chart-bar"></i> 频率分析</h4>
+                            <div class="frequency-chart" id="frequencyChart">
+                                <div class="chart-legend">字母频率分布</div>
+                                <div class="chart-bars"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 现代密码模块 -->
+                    <div class="tab-pane" id="modern-tab">
+                        <div class="tab-header">
+                            <h3><i class="fas fa-lock"></i> 现代密码模块</h3>
+                            <p>AES、RSA、国密、流密码、椭圆曲线等现代密码算法工具</p>
+                        </div>
+                        
+                        <!-- 对称加密 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-key"></i> 对称加密算法</h4>
+                            <div class="controls-row">
+                                <select class="input-select" id="symAlgo">
+                                    <option value="aes">AES</option>
+                                    <option value="des">DES</option>
+                                    <option value="3des">3DES</option>
+                                    <option value="blowfish">Blowfish</option>
+                                    <option value="rc4">RC4</option>
+                                </select>
+                                <span class="input-label">算法</span>
+                                <input type="text" class="input-text" id="symKey" placeholder="密钥 (16字节)" value="MySecretKey12345">
+                                <button class="btn btn-primary" onclick="modern.symEncrypt()">
+                                    <i class="fas fa-lock"></i> 加密
+                                </button>
+                                <button class="btn btn-success" onclick="modern.symDecrypt()">
+                                    <i class="fas fa-unlock"></i> 解密
+                                </button>
+                                <button class="btn btn-info" onclick="modern.symGenerate()">
+                                    <i class="fas fa-key"></i> 生成密钥
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 非对称加密 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-keyboard"></i> 非对称加密 (RSA)</h4>
+                            <div class="controls-row">
+                                <select class="input-select" id="rsaKeySize">
+                                    <option value="1024">1024位</option>
+                                    <option value="2048">2048位 (推荐)</option>
+                                    <option value="4096">4096位</option>
+                                </select>
+                                <span class="input-label">密钥长度</span>
+                                <button class="btn btn-primary" onclick="modern.rsaGenerateKey()">
+                                    <i class="fas fa-cogs"></i> 生成密钥对
+                                </button>
+                                <button class="btn btn-success" onclick="modern.rsaEncrypt()">
+                                    <i class="fas fa-lock"></i> RSA加密
+                                </button>
+                                <button class="btn btn-warning" onclick="modern.rsaDecrypt()">
+                                    <i class="fas fa-unlock"></i> RSA解密
+                                </button>
+                                <button class="btn btn-info" onclick="modern.rsaSign()">
+                                    <i class="fas fa-signature"></i> 数字签名
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 椭圆曲线密码 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-infinity"></i> 椭圆曲线密码 (ECC)</h4>
+                            <div class="controls-row">
+                                <select class="input-select" id="eccCurve">
+                                    <option value="secp256k1">secp256k1 (比特币)</option>
+                                    <option value="secp256r1">secp256r1 (P-256)</option>
+                                    <option value="secp384r1">secp384r1 (P-384)</option>
+                                    <option value="secp521r1">secp521r1 (P-521)</option>
+                                </select>
+                                <span class="input-label">曲线</span>
+                                <button class="btn btn-primary" onclick="modern.eccGenerate()">
+                                    <i class="fas fa-cogs"></i> 生成ECC密钥
+                                </button>
+                                <button class="btn btn-success" onclick="modern.eccEncrypt()">
+                                    <i class="fas fa-lock"></i> ECC加密
+                                </button>
+                                <button class="btn btn-warning" onclick="modern.eccSign()">
+                                    <i class="fas fa-signature"></i> ECC签名
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 国密算法 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-flag"></i> 国密算法 (SM系列)</h4>
+                            <div class="controls-grid">
+                                <button class="btn btn-sm" onclick="modern.sm2()">
+                                    <i class="fas fa-key"></i> SM2
+                                </button>
+                                <button class="btn btn-sm" onclick="modern.sm3()">
+                                    <i class="fas fa-fingerprint"></i> SM3
+                                </button>
+                                <button class="btn btn-sm" onclick="modern.sm4()">
+                                    <i class="fas fa-lock"></i> SM4
+                                </button>
+                                <button class="btn btn-sm" onclick="modern.zuc()">
+                                    <i class="fas fa-stream"></i> 祖冲之
+                                </button>
+                                <button class="btn btn-sm" onclick="modern.sm9()">
+                                    <i class="fas fa-users"></i> SM9
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 流密码 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-stream"></i> 流密码算法</h4>
+                            <div class="controls-grid">
+                                <button class="btn btn-sm" onclick="modern.rc4()">
+                                    <i class="fas fa-water"></i> RC4
+                                </button>
+                                <button class="btn btn-sm" onclick="modern.chacha()">
+                                    <i class="fas fa-wind"></i> ChaCha20
+                                </button>
+                                <button class="btn btn-sm" onclick="modern.salsa()">
+                                    <i class="fas fa-dance"></i> Salsa20
+                                </button>
+                                <button class="btn btn-sm" onclick="modern.xor()">
+                                    <i class="fas fa-xmark"></i> XOR
+                                </button>
+                                <button class="btn btn-sm" onclick="modern.streamTest()">
+                                    <i class="fas fa-play"></i> 测试流
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 哈希和摘要 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-hashtag"></i> 消息认证码</h4>
+                            <div class="controls-row">
+                                <select class="input-select" id="macAlgo">
+                                    <option value="hmac-sha256">HMAC-SHA256</option>
+                                    <option value="hmac-sha512">HMAC-SHA512</option>
+                                    <option value="cmac">CMAC-AES</option>
+                                    <option value="poly1305">Poly1305</option>
+                                </select>
+                                <span class="input-label">算法</span>
+                                <input type="text" class="input-text" id="macKey" placeholder="MAC密钥">
+                                <button class="btn btn-primary" onclick="modern.macGenerate()">
+                                    <i class="fas fa-hashtag"></i> 生成MAC
+                                </button>
+                                <button class="btn btn-success" onclick="modern.macVerify()">
+                                    <i class="fas fa-check"></i> 验证MAC
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 加密模式 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-cogs"></i> 加密模式</h4>
+                            <div class="controls-row">
+                                <select class="input-select" id="cipherMode">
+                                    <option value="ecb">ECB (不推荐)</option>
+                                    <option value="cbc" selected>CBC</option>
+                                    <option value="cfb">CFB</option>
+                                    <option value="ofb">OFB</option>
+                                    <option value="ctr">CTR</option>
+                                    <option value="gcm">GCM</option>
+                                </select>
+                                <span class="input-label">模式</span>
+                                <input type="text" class="input-text" id="cipherIV" placeholder="初始向量 (IV)" value="RandomIV12345678">
+                                <button class="btn btn-info" onclick="modern.modeTest()">
+                                    <i class="fas fa-vial"></i> 测试模式
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 密钥管理 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-database"></i> 密钥管理</h4>
+                            <div class="controls-grid">
+                                <button class="btn btn-sm btn-info" onclick="modern.importKey()">
+                                    <i class="fas fa-file-import"></i> 导入密钥
+                                </button>
+                                <button class="btn btn-sm btn-info" onclick="modern.exportKey()">
+                                    <i class="fas fa-file-export"></i> 导出密钥
+                                </button>
+                                <button class="btn btn-sm btn-warning" onclick="modern.deriveKey()">
+                                    <i class="fas fa-key"></i> 密钥派生
+                                </button>
+                                <button class="btn btn-sm btn-warning" onclick="modern.encryptKey()">
+                                    <i class="fas fa-lock"></i> 加密密钥
+                                </button>
+                                <button class="btn btn-sm btn-success" onclick="modern.keyStore()">
+                                    <i class="fas fa-save"></i> 保存密钥
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 安全分析 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-chart-line"></i> 安全分析</h4>
+                            <div class="controls-row">
+                                <button class="btn" onclick="modern.entropyAnalyze()">
+                                    <i class="fas fa-chart-bar"></i> 熵分析
+                                </button>
+                                <button class="btn" onclick="modern.frequencyAnalyze()">
+                                    <i class="fas fa-wave-square"></i> 频率分析
+                                </button>
+                                <button class="btn" onclick="modern.randomnessTest()">
+                                    <i class="fas fa-dice"></i> 随机性测试
+                                </button>
+                                <button class="btn" onclick="modern.biasDetect()">
+                                    <i class="fas fa-search"></i> 偏差检测
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 编码转换模块 -->
+                    <div class="tab-pane" id="encode-tab">
+                        <div class="tab-header">
+                            <h3><i class="fas fa-code"></i> 编码转换模块</h3>
+                            <p>Base64、Hex、URL、Unicode、ASCII、二进制等多种编码转换工具</p>
+                        </div>
+                        
+                        <!-- 基础编码 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-exchange-alt"></i> 基础编码转换</h4>
+                            <div class="controls-row">
+                                <select class="input-select" id="encodeFrom">
+                                    <option value="text">文本</option>
+                                    <option value="hex">十六进制</option>
+                                    <option value="base64">Base64</option>
+                                    <option value="url">URL编码</option>
+                                    <option value="binary">二进制</option>
+                                </select>
+                                <span class="input-label">从</span>
+                                <i class="fas fa-arrow-right"></i>
+                                <select class="input-select" id="encodeTo">
+                                    <option value="hex">十六进制</option>
+                                    <option value="base64">Base64</option>
+                                    <option value="url">URL编码</option>
+                                    <option value="binary">二进制</option>
+                                    <option value="text" selected>文本</option>
+                                </select>
+                                <span class="input-label">到</span>
+                                <button class="btn btn-primary" onclick="encode.convert()">
+                                    <i class="fas fa-sync-alt"></i> 转换
+                                </button>
+                                <button class="btn btn-success" onclick="encode.autoDetect()">
+                                    <i class="fas fa-search"></i> 自动检测
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Base64 工具 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-layer-group"></i> Base64 编码/解码</h4>
+                            <div class="controls-grid">
+                                <button class="btn" onclick="encode.base64Encode()">
+                                    <i class="fas fa-arrow-up"></i> Base64编码
+                                </button>
+                                <button class="btn" onclick="encode.base64Decode()">
+                                    <i class="fas fa-arrow-down"></i> Base64解码
+                                </button>
+                                <button class="btn" onclick="encode.base64UrlEncode()">
+                                    <i class="fas fa-link"></i> Base64URL编码
+                                </button>
+                                <button class="btn" onclick="encode.base64UrlDecode()">
+                                    <i class="fas fa-unlink"></i> Base64URL解码
+                                </button>
+                                <button class="btn" onclick="encode.base64File()">
+                                    <i class="fas fa-file"></i> 文件转Base64
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 十六进制工具 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-hashtag"></i> 十六进制 (Hex) 工具</h4>
+                            <div class="controls-grid">
+                                <button class="btn" onclick="encode.hexEncode()">
+                                    <i class="fas fa-arrow-up"></i> Hex编码
+                                </button>
+                                <button class="btn" onclick="encode.hexDecode()">
+                                    <i class="fas fa-arrow-down"></i> Hex解码
+                                </button>
+                                <button class="btn" onclick="encode.hexDump()">
+                                    <i class="fas fa-table"></i> 十六进制转储
+                                </button>
+                                <button class="btn" onclick="encode.hexToBytes()">
+                                    <i class="fas fa-cogs"></i> Hex转字节数组
+                                </button>
+                                <button class="btn" onclick="encode.bytesToHex()">
+                                    <i class="fas fa-cogs"></i> 字节数组转Hex
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- URL 编码 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-link"></i> URL 编码/解码</h4>
+                            <div class="controls-grid">
+                                <button class="btn" onclick="encode.urlEncode()">
+                                    <i class="fas fa-arrow-up"></i> URL编码
+                                </button>
+                                <button class="btn" onclick="encode.urlDecode()">
+                                    <i class="fas fa-arrow-down"></i> URL解码
+                                </button>
+                                <button class="btn" onclick="encode.urlEncodeComponent()">
+                                    <i class="fas fa-code"></i> URL组件编码
+                                </button>
+                                <button class="btn" onclick="encode.urlDecodeComponent()">
+                                    <i class="fas fa-code"></i> URL组件解码
+                                </button>
+                                <button class="btn" onclick="encode.parseQueryString()">
+                                    <i class="fas fa-search"></i> 解析查询字符串
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Unicode 工具 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-globe"></i> Unicode 编码/解码</h4>
+                            <div class="controls-grid">
+                                <button class="btn" onclick="encode.unicodeEncode()">
+                                    <i class="fas fa-arrow-up"></i> Unicode编码
+                                </button>
+                                <button class="btn" onclick="encode.unicodeDecode()">
+                                    <i class="fas fa-arrow-down"></i> Unicode解码
+                                </button>
+                                <button class="btn" onclick="encode.utf8Encode()">
+                                    <i class="fas fa-language"></i> UTF-8编码
+                                </button>
+                                <button class="btn" onclick="encode.utf8Decode()">
+                                    <i class="fas fa-language"></i> UTF-8解码
+                                </button>
+                                <button class="btn" onclick="encode.escape()">
+                                    <i class="fas fa-running"></i> Escape编码
+                                </button>
+                                <button class="btn" onclick="encode.unescape()">
+                                    <i class="fas fa-running"></i> Unescape解码
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 二进制工具 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-stream"></i> 二进制工具</h4>
+                            <div class="controls-grid">
+                                <button class="btn" onclick="encode.binaryEncode()">
+                                    <i class="fas fa-arrow-up"></i> 二进制编码
+                                </button>
+                                <button class="btn" onclick="encode.binaryDecode()">
+                                    <i class="fas fa-arrow-down"></i> 二进制解码
+                                </button>
+                                <button class="btn" onclick="encode.asciiTable()">
+                                    <i class="fas fa-table"></i> ASCII码表
+                                </button>
+                                <button class="btn" onclick="encode.binToDec()">
+                                    <i class="fas fa-calculator"></i> 二进制转十进制
+                                </button>
+                                <button class="btn" onclick="encode.decToBin()">
+                                    <i class="fas fa-calculator"></i> 十进制转二进制
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 其他编码 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-cogs"></i> 其他编码格式</h4>
+                            <div class="controls-grid">
+                                <button class="btn" onclick="encode.htmlEncode()">
+                                    <i class="fas fa-code"></i> HTML实体编码
+                                </button>
+                                <button class="btn" onclick="encode.htmlDecode()">
+                                    <i class="fas fa-code"></i> HTML实体解码
+                                </button>
+                                <button class="btn" onclick="encode.morseEncode()">
+                                    <i class="fas fa-wave-square"></i> 摩斯电码
+                                </button>
+                                <button class="btn" onclick="encode.morseDecode()">
+                                    <i class="fas fa-wave-square"></i> 摩斯解码
+                                </button>
+                                <button class="btn" onclick="encode.rot13()">
+                                    <i class="fas fa-redo"></i> ROT13
+                                </button>
+                                <button class="btn" onclick="encode.atbash()">
+                                    <i class="fas fa-exchange-alt"></i> Atbash
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 数据格式转换 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-database"></i> 数据格式转换</h4>
+                            <div class="controls-grid">
+                                <button class="btn" onclick="encode.jsonFormat()">
+                                    <i class="fas fa-brace"></i> JSON格式化
+                                </button>
+                                <button class="btn" onclick="encode.jsonMinify()">
+                                    <i class="fas fa-compress"></i> JSON压缩
+                                </button>
+                                <button class="btn" onclick="encode.xmlFormat()">
+                                    <i class="fas fa-code"></i> XML格式化
+                                </button>
+                                <button class="btn" onclick="encode.csvToJson()">
+                                    <i class="fas fa-table"></i> CSV转JSON
+                                </button>
+                                <button class="btn" onclick="encode.jsonToCsv()">
+                                    <i class="fas fa-table"></i> JSON转CSV
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 编码检测 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-search"></i> 编码检测与分析</h4>
+                            <div class="controls-row">
+                                <button class="btn" onclick="encode.detectCharset()">
+                                    <i class="fas fa-search"></i> 检测字符集
+                                </button>
+                                <button class="btn" onclick="encode.detectBom()">
+                                    <i class="fas fa-file"></i> 检测BOM
+                                </button>
+                                <button class="btn" onclick="encode.normalizeText()">
+                                    <i class="fas fa-magic"></i> 文本规范化
+                                </button>
+                                <button class="btn" onclick="encode.removeBom()">
+                                    <i class="fas fa-trash"></i> 移除BOM
+                                </button>
+                                <button class="btn" onclick="encode.fixEncoding()">
+                                    <i class="fas fa-wrench"></i> 修复乱码
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 编码设置 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-sliders-h"></i> 编码设置</h4>
+                            <div class="controls-row">
+                                <select class="input-select" id="charsetSelect">
+                                    <option value="UTF-8">UTF-8</option>
+                                    <option value="GB2312">GB2312</option>
+                                    <option value="GBK">GBK</option>
+                                    <option value="ISO-8859-1">ISO-8859-1</option>
+                                    <option value="Windows-1252">Windows-1252</option>
+                                    <option value="ASCII">ASCII</option>
+                                </select>
+                                <span class="input-label">字符集</span>
+                                <select class="input-select" id="lineEndingSelect">
+                                    <option value="lf">LF (\n)</option>
+                                    <option value="crlf">CRLF (\r\n)</option>
+                                    <option value="cr">CR (\r)</option>
+                                </select>
+                                <span class="input-label">换行符</span>
+                                <button class="btn btn-info" onclick="encode.applySettings()">
+                                    <i class="fas fa-check"></i> 应用设置
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 哈希算法模块 -->
+                    <div class="tab-pane" id="hash-tab">
+                        <div class="tab-header">
+                            <h3><i class="fas fa-fingerprint"></i> 哈希算法模块</h3>
+                            <p>MD5、SHA系列、SM3、BLAKE、RIPEMD等哈希算法与校验工具</p>
+                        </div>
+                        
+                        <!-- 常用哈希算法 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-bolt"></i> 常用哈希算法</h4>
+                            <div class="controls-grid">
+                                <button class="btn" onclick="hash.md5()">
+                                    <i class="fas fa-hashtag"></i> MD5
+                                </button>
+                                <button class="btn" onclick="hash.sha1()">
+                                    <i class="fas fa-hashtag"></i> SHA-1
+                                </button>
+                                <button class="btn" onclick="hash.sha256()">
+                                    <i class="fas fa-hashtag"></i> SHA-256
+                                </button>
+                                <button class="btn" onclick="hash.sha512()">
+                                    <i class="fas fa-hashtag"></i> SHA-512
+                                </button>
+                                <button class="btn" onclick="hash.sha3()">
+                                    <i class="fas fa-hashtag"></i> SHA-3
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- SHA系列 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-shield-alt"></i> SHA-2 系列</h4>
+                            <div class="controls-grid">
+                                <button class="btn" onclick="hash.sha224()">SHA-224</button>
+                                <button class="btn" onclick="hash.sha256()">SHA-256</button>
+                                <button class="btn" onclick="hash.sha384()">SHA-384</button>
+                                <button class="btn" onclick="hash.sha512()">SHA-512</button>
+                                <button class="btn" onclick="hash.sha512_224()">SHA-512/224</button>
+                                <button class="btn" onclick="hash.sha512_256()">SHA-512/256</button>
+                            </div>
+                        </div>
+                        
+                        <!-- SHA-3 系列 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-cube"></i> SHA-3 系列</h4>
+                            <div class="controls-grid">
+                                <button class="btn" onclick="hash.sha3_224()">SHA3-224</button>
+                                <button class="btn" onclick="hash.sha3_256()">SHA3-256</button>
+                                <button class="btn" onclick="hash.sha3_384()">SHA3-384</button>
+                                <button class="btn" onclick="hash.sha3_512()">SHA3-512</button>
+                                <button class="btn" onclick="hash.keccak()">Keccak</button>
+                                <button class="btn" onclick="hash.shake()">SHAKE</button>
+                            </div>
+                        </div>
+                        
+                        <!-- BLAKE 系列 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-leaf"></i> BLAKE 系列</h4>
+                            <div class="controls-grid">
+                                <button class="btn" onclick="hash.blake2s()">BLAKE2s</button>
+                                <button class="btn" onclick="hash.blake2b()">BLAKE2b</button>
+                                <button class="btn" onclick="hash.blake3()">BLAKE3</button>
+                                <button class="btn" onclick="hash.blake256()">BLAKE256</button>
+                                <button class="btn" onclick="hash.blake512()">BLAKE512</button>
+                            </div>
+                        </div>
+                        
+                        <!-- 国密哈希 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-flag"></i> 国密算法</h4>
+                            <div class="controls-grid">
+                                <button class="btn" onclick="hash.sm3()">SM3</button>
+                                <button class="btn" onclick="hash.sm3_hmac()">SM3-HMAC</button>
+                            </div>
+                        </div>
+                        
+                        <!-- 其他哈希算法 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-tools"></i> 其他哈希算法</h4>
+                            <div class="controls-grid">
+                                <button class="btn" onclick="hash.ripemd()">RIPEMD</button>
+                                <button class="btn" onclick="hash.whirlpool()">Whirlpool</button>
+                                <button class="btn" onclick="hash.tiger()">Tiger</button>
+                                <button class="btn" onclick="hash.crc32()">CRC32</button>
+                                <button class="btn" onclick="hash.adler32()">Adler32</button>
+                                <button class="btn" onclick="hash.fnv()">FNV</button>
+                            </div>
+                        </div>
+                        
+                        <!-- 哈希模式 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-cogs"></i> 哈希模式与选项</h4>
+                            <div class="controls-row">
+                                <select class="input-select" id="hashOutputFormat">
+                                    <option value="hex">十六进制</option>
+                                    <option value="base64">Base64</option>
+                                    <option value="base64url">Base64URL</option>
+                                    <option value="binary">二进制</option>
+                                </select>
+                                <span class="input-label">输出格式</span>
+                                <input type="number" class="input-number" id="hashIterations" value="1" min="1" max="100000">
+                                <span class="input-label">迭代次数</span>
+                                <input type="text" class="input-text" id="hashSalt" placeholder="盐值 (可选)">
+                                <button class="btn btn-info" onclick="hash.hashWithOptions()">
+                                    <i class="fas fa-cog"></i> 自定义哈希
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- HMAC -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-key"></i> HMAC (密钥哈希)</h4>
+                            <div class="controls-row">
+                                <select class="input-select" id="hmacAlgorithm">
+                                    <option value="md5">HMAC-MD5</option>
+                                    <option value="sha1">HMAC-SHA1</option>
+                                    <option value="sha256" selected>HMAC-SHA256</option>
+                                    <option value="sha512">HMAC-SHA512</option>
+                                    <option value="sm3">HMAC-SM3</option>
+                                </select>
+                                <span class="input-label">算法</span>
+                                <input type="text" class="input-text" id="hmacKey" placeholder="HMAC密钥" value="secret-key">
+                                <button class="btn btn-primary" onclick="hash.hmac()">
+                                    <i class="fas fa-hashtag"></i> 计算HMAC
+                                </button>
+                                <button class="btn btn-success" onclick="hash.verifyHmac()">
+                                    <i class="fas fa-check"></i> 验证HMAC
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 文件哈希 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-file"></i> 文件哈希计算</h4>
+                            <div class="controls-row">
+                                <input type="file" class="input-file" id="hashFileInput" style="display: none">
+                                <button class="btn" onclick="hash.chooseFile()">
+                                    <i class="fas fa-file-upload"></i> 选择文件
+                                </button>
+                                <span id="hashFileName">未选择文件</span>
+                                <select class="input-select" id="fileHashAlgorithm">
+                                    <option value="md5">MD5</option>
+                                    <option value="sha1">SHA-1</option>
+                                    <option value="sha256" selected>SHA-256</option>
+                                    <option value="sha512">SHA-512</option>
+                                </select>
+                                <button class="btn btn-primary" onclick="hash.hashFile()">
+                                    <i class="fas fa-calculator"></i> 计算文件哈希
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 哈希碰撞测试 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-search"></i> 哈希分析与测试</h4>
+                            <div class="controls-grid">
+                                <button class="btn" onclick="hash.findCollision()">
+                                    <i class="fas fa-search"></i> 寻找碰撞
+                                </button>
+                                <button class="btn" onclick="hash.hashLength()">
+                                    <i class="fas fa-ruler"></i> 哈希长度
+                                </button>
+                                <button class="btn" onclick="hash.compareHashes()">
+                                    <i class="fas fa-balance-scale"></i> 哈希比较
+                                </button>
+                                <button class="btn" onclick="hash.hashPerformance()">
+                                    <i class="fas fa-tachometer-alt"></i> 性能测试
+                                </button>
+                                <button class="btn" onclick="hash.hashBenchmark()">
+                                    <i class="fas fa-chart-line"></i> 基准测试
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 哈希表 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-table"></i> 哈希表工具</h4>
+                            <div class="controls-grid">
+                                <button class="btn" onclick="hash.rainbowTable()">
+                                    <i class="fas fa-rainbow"></i> 彩虹表生成
+                                </button>
+                                <button class="btn" onclick="hash.lookupHash()">
+                                    <i class="fas fa-search"></i> 哈希查询
+                                </button>
+                                <button class="btn" onclick="hash.hashCrack()">
+                                    <i class="fas fa-unlock"></i> 哈希破解
+                                </button>
+                                <button class="btn" onclick="hash.saltAnalysis()">
+                                    <i class="fas fa-flask"></i> 盐值分析
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 密码学哈希 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-lock"></i> 密码学哈希函数</h4>
+                            <div class="controls-grid">
+                                <button class="btn" onclick="hash.pbkdf2()">
+                                    <i class="fas fa-key"></i> PBKDF2
+                                </button>
+                                <button class="btn" onclick="hash.bcrypt()">
+                                    <i class="fas fa-key"></i> bcrypt
+                                </button>
+                                <button class="btn" onclick="hash.scrypt()">
+                                    <i class="fas fa-key"></i> scrypt
+                                </button>
+                                <button class="btn" onclick="hash.argon2()">
+                                    <i class="fas fa-key"></i> Argon2
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 密码工具模块 -->
+                    <div class="tab-pane" id="crypto-tab">
+                        <div class="tab-header">
+                            <h3><i class="fas fa-key"></i> 密码工具模块</h3>
+                            <p>密钥生成、文本处理、数字操作、随机数生成等密码学工具</p>
+                        </div>
+                        
+                        <!-- 密钥生成 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-key"></i> 密钥生成器</h4>
+                            <div class="controls-row">
+                                <select class="input-select" id="keyType">
+                                    <option value="random">随机密钥</option>
+                                    <option value="passphrase">密码短语</option>
+                                    <option value="uuid">UUID</option>
+                                    <option value="otp">一次性密码</option>
+                                    <option value="mnemonic">助记词</option>
+                                </select>
+                                <span class="input-label">类型</span>
+                                <input type="number" class="input-number" id="keyLength" value="32" min="8" max="256">
+                                <span class="input-label">长度</span>
+                                <button class="btn btn-primary" onclick="cryptoTools.generateKey()">
+                                    <i class="fas fa-key"></i> 生成密钥
+                                </button>
+                                <button class="btn btn-success" onclick="cryptoTools.saveKey()">
+                                    <i class="fas fa-save"></i> 保存密钥
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 随机数生成 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-dice"></i> 随机数生成器</h4>
+                            <div class="controls-row">
+                                <input type="number" class="input-number" id="randomMin" value="0" min="0" max="1000000">
+                                <span class="input-label">最小值</span>
+                                <input type="number" class="input-number" id="randomMax" value="100" min="1" max="1000000">
+                                <span class="input-label">最大值</span>
+                                <input type="number" class="input-number" id="randomCount" value="10" min="1" max="100">
+                                <span class="input-label">数量</span>
+                                <button class="btn btn-primary" onclick="cryptoTools.generateRandom()">
+                                    <i class="fas fa-random"></i> 生成随机数
+                                </button>
+                                <button class="btn btn-warning" onclick="cryptoTools.testRandomness()">
+                                    <i class="fas fa-vial"></i> 测试随机性
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 文本处理 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-text-height"></i> 文本处理工具</h4>
+                            <div class="controls-grid">
+                                <button class="btn" onclick="cryptoTools.textToUpper()">
+                                    <i class="fas fa-arrow-up"></i> 转大写
+                                </button>
+                                <button class="btn" onclick="cryptoTools.textToLower()">
+                                    <i class="fas fa-arrow-down"></i> 转小写
+                                </button>
+                                <button class="btn" onclick="cryptoTools.textReverse()">
+                                    <i class="fas fa-exchange-alt"></i> 反转文本
+                                </button>
+                                <button class="btn" onclick="cryptoTools.textShuffle()">
+                                    <i class="fas fa-random"></i> 随机重排
+                                </button>
+                                <button class="btn" onclick="cryptoTools.removeSpaces()">
+                                    <i class="fas fa-minus"></i> 移除空格
+                                </button>
+                                <button class="btn" onclick="cryptoTools.removeDuplicates()">
+                                    <i class="fas fa-filter"></i> 去重
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 数字操作 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-calculator"></i> 数字操作工具</h4>
+                            <div class="controls-grid">
+                                <button class="btn" onclick="cryptoTools.decToHex()">
+                                    <i class="fas fa-hashtag"></i> 十进制转十六进制
+                                </button>
+                                <button class="btn" onclick="cryptoTools.hexToDec()">
+                                    <i class="fas fa-hashtag"></i> 十六进制转十进制
+                                </button>
+                                <button class="btn" onclick="cryptoTools.decToBin()">
+                                    <i class="fas fa-stream"></i> 十进制转二进制
+                                </button>
+                                <button class="btn" onclick="cryptoTools.binToDec()">
+                                    <i class="fas fa-stream"></i> 二进制转十进制
+                                </button>
+                                <button class="btn" onclick="cryptoTools.decToBase()">
+                                    <i class="fas fa-superscript"></i> 十进制转其他进制
+                                </button>
+                                <button class="btn" onclick="cryptoTools.baseToDec()">
+                                    <i class="fas fa-superscript"></i> 其他进制转十进制
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 编码检测 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-search"></i> 编码检测工具</h4>
+                            <div class="controls-grid">
+                                <button class="btn" onclick="cryptoTools.detectEncoding()">
+                                    <i class="fas fa-search"></i> 检测编码
+                                </button>
+                                <button class="btn" onclick="cryptoTools.detectBase()">
+                                    <i class="fas fa-search"></i> 检测进制
+                                </button>
+                                <button class="btn" onclick="cryptoTools.detectPattern()">
+                                    <i class="fas fa-search"></i> 检测模式
+                                </button>
+                                <button class="btn" onclick="cryptoTools.analyzeFrequency()">
+                                    <i class="fas fa-chart-bar"></i> 频率分析
+                                </button>
+                                <button class="btn" onclick="cryptoTools.entropyAnalysis()">
+                                    <i class="fas fa-brain"></i> 熵分析
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 时间工具 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-clock"></i> 时间戳工具</h4>
+                            <div class="controls-row">
+                                <input type="number" class="input-number" id="unixTimestamp" value="" placeholder="Unix时间戳">
+                                <span class="input-label">时间戳</span>
+                                <button class="btn" onclick="cryptoTools.timestampToDate()">
+                                    <i class="fas fa-arrow-right"></i> 转日期
+                                </button>
+                                <button class="btn" onclick="cryptoTools.dateToTimestamp()">
+                                    <i class="fas fa-arrow-left"></i> 转时间戳
+                                </button>
+                                <button class="btn" onclick="cryptoTools.currentTimestamp()">
+                                    <i class="fas fa-sync"></i> 当前时间戳
+                                </button>
+                                <button class="btn" onclick="cryptoTools.formatTime()">
+                                    <i class="fas fa-calendar"></i> 格式化时间
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 数学工具 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-square-root-alt"></i> 数学工具</h4>
+                            <div class="controls-grid">
+                                <button class="btn" onclick="cryptoTools.calculatePrime()">
+                                    <i class="fas fa-infinity"></i> 计算质数
+                                </button>
+                                <button class="btn" onclick="cryptoTools.calculateGcd()">
+                                    <i class="fas fa-divide"></i> 计算最大公约数
+                                </button>
+                                <button class="btn" onclick="cryptoTools.calculateLcm()">
+                                    <i class="fas fa-times"></i> 计算最小公倍数
+                                </button>
+                                <button class="btn" onclick="cryptoTools.calculateMod()">
+                                    <i class="fas fa-percent"></i> 模运算
+                                </button>
+                                <button class="btn" onclick="cryptoTools.calculatePow()">
+                                    <i class="fas fa-superscript"></i> 幂运算
+                                </button>
+                                <button class="btn" onclick="cryptoTools.calculateSqrt()">
+                                    <i class="fas fa-square-root-alt"></i> 平方根
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 文件工具 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-file"></i> 文件处理工具</h4>
+                            <div class="controls-grid">
+                                <button class="btn" onclick="cryptoTools.splitFile()">
+                                    <i class="fas fa-cut"></i> 分割文件
+                                </button>
+                                <button class="btn" onclick="cryptoTools.mergeFile()">
+                                    <i class="fas fa-paste"></i> 合并文件
+                                </button>
+                                <button class="btn" onclick="cryptoTools.compressFile()">
+                                    <i class="fas fa-compress"></i> 压缩文件
+                                </button>
+                                <button class="btn" onclick="cryptoTools.decompressFile()">
+                                    <i class="fas fa-expand"></i> 解压文件
+                                </button>
+                                <button class="btn" onclick="cryptoTools.encryptFile()">
+                                    <i class="fas fa-lock"></i> 加密文件
+                                </button>
+                                <button class="btn" onclick="cryptoTools.decryptFile()">
+                                    <i class="fas fa-unlock"></i> 解密文件
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 网络工具 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-network-wired"></i> 网络工具</h4>
+                            <div class="controls-grid">
+                                <button class="btn" onclick="cryptoTools.ipConvert()">
+                                    <i class="fas fa-globe"></i> IP地址转换
+                                </button>
+                                <button class="btn" onclick="cryptoTools.macConvert()">
+                                    <i class="fas fa-network-wired"></i> MAC地址转换
+                                </button>
+                                <button class="btn" onclick="cryptoTools.urlParse()">
+                                    <i class="fas fa-link"></i> URL解析
+                                </button>
+                                <button class="btn" onclick="cryptoTools.dnsLookup()">
+                                    <i class="fas fa-search"></i> DNS查询
+                                </button>
+                                <button class="btn" onclick="cryptoTools.whois()">
+                                    <i class="fas fa-user"></i> Whois查询
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 密码学工具 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-user-secret"></i> 密码学工具</h4>
+                            <div class="controls-grid">
+                                <button class="btn" onclick="cryptoTools.oneTimePad()">
+                                    <i class="fas fa-key"></i> 一次一密
+                                </button>
+                                <button class="btn" onclick="cryptoTools.steganography()">
+                                    <i class="fas fa-user-secret"></i> 隐写术
+                                </button>
+                                <button class="btn" onclick="cryptoTools.watermark()">
+                                    <i class="fas fa-water"></i> 数字水印
+                                </button>
+                                <button class="btn" onclick="cryptoTools.digitalSignature()">
+                                    <i class="fas fa-signature"></i> 数字签名
+                                </button>
+                                <button class="btn" onclick="cryptoTools.certificate()">
+                                    <i class="fas fa-certificate"></i> 证书工具
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 实用工具 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-tools"></i> 实用小工具</h4>
+                            <div class="controls-grid">
+                                <button class="btn" onclick="cryptoTools.qrCode()">
+                                    <i class="fas fa-qrcode"></i> 生成二维码
+                                </button>
+                                <button class="btn" onclick="cryptoTools.barcode()">
+                                    <i class="fas fa-barcode"></i> 生成条形码
+                                </button>
+                                <button class="btn" onclick="cryptoTools.checksum()">
+                                    <i class="fas fa-check"></i> 校验和计算
+                                </button>
+                                <button class="btn" onclick="cryptoTools.dataSize()">
+                                    <i class="fas fa-weight"></i> 数据大小计算
+                                </button>
+                                <button class="btn" onclick="cryptoTools.colorConvert()">
+                                    <i class="fas fa-palette"></i> 颜色转换
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 隐写分析模块 -->
+                    <div class="tab-pane" id="stego-tab">
+                        <div class="tab-header">
+                            <h3><i class="fas fa-user-secret"></i> 隐写分析模块</h3>
+                            <p>零宽字符、空格隐写、文件隐写、LSB隐写等隐写术分析与检测工具</p>
+                        </div>
+                        
+                        <!-- 零宽字符隐写 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-eye-slash"></i> 零宽字符隐写</h4>
+                            <div class="controls-row">
+                                <input type="text" class="input-text" id="zeroWidthText" placeholder="隐藏的文本">
+                                <span class="input-label">隐藏文本</span>
+                                <input type="text" class="input-text" id="zeroWidthCover" placeholder="载体文本" value="这是一段普通文本">
+                                <button class="btn btn-primary" onclick="stego.zeroWidthEmbed()">
+                                    <i class="fas fa-eye-slash"></i> 嵌入零宽字符
+                                </button>
+                                <button class="btn btn-success" onclick="stego.zeroWidthExtract()">
+                                    <i class="fas fa-eye"></i> 提取零宽字符
+                                </button>
+                                <button class="btn btn-warning" onclick="stego.zeroWidthDetect()">
+                                    <i class="fas fa-search"></i> 检测零宽字符
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 空格隐写 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-space-shuttle"></i> 空格隐写 (Steganography)</h4>
+                            <div class="controls-grid">
+                                <button class="btn" onclick="stego.spaceEncode()">
+                                    <i class="fas fa-arrow-up"></i> 空格编码
+                                </button>
+                                <button class="btn" onclick="stego.spaceDecode()">
+                                    <i class="fas fa-arrow-down"></i> 空格解码
+                                </button>
+                                <button class="btn" onclick="stego.tabEncode()">
+                                    <i class="fas fa-arrow-up"></i> Tab编码
+                                </button>
+                                <button class="btn" onclick="stego.tabDecode()">
+                                    <i class="fas fa-arrow-down"></i> Tab解码
+                                </button>
+                                <button class="btn" onclick="stego.spaceAnalyze()">
+                                    <i class="fas fa-chart-bar"></i> 空格分析
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 文本隐写 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-font"></i> 文本隐写技术</h4>
+                            <div class="controls-grid">
+                                <button class="btn" onclick="stego.acrostic()">
+                                    <i class="fas fa-text-height"></i> 藏头诗
+                                </button>
+                                <button class="btn" onclick="stego.leetSpeak()">
+                                    <i class="fas fa-keyboard"></i> Leet Speak
+                                </button>
+                                <button class="btn" onclick="stego.wordPattern()">
+                                    <i class="fas fa-shapes"></i> 词语模式
+                                </button>
+                                <button class="btn" onclick="stego.capitalization()">
+                                    <i class="fas fa-font"></i> 大小写编码
+                                </button>
+                                <button class="btn" onclick="stego.punctuation()">
+                                    <i class="fas fa-comma"></i> 标点符号编码
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 图像隐写 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-image"></i> 图像隐写 (LSB)</h4>
+                            <div class="controls-row">
+                                <input type="file" class="input-file" id="imageFileInput" style="display: none" accept="image/*">
+                                <button class="btn" onclick="stego.chooseImage()">
+                                    <i class="fas fa-file-image"></i> 选择图片
+                                </button>
+                                <span id="imageFileName">未选择图片</span>
+                                <select class="input-select" id="lsbBits">
+                                    <option value="1">1位LSB</option>
+                                    <option value="2">2位LSB</option>
+                                    <option value="3">3位LSB</option>
+                                    <option value="4">4位LSB</option>
+                                </select>
+                                <button class="btn btn-primary" onclick="stego.lsbEmbed()">
+                                    <i class="fas fa-eye-slash"></i> LSB嵌入
+                                </button>
+                                <button class="btn btn-success" onclick="stego.lsbExtract()">
+                                    <i class="fas fa-eye"></i> LSB提取
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 音频隐写 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-music"></i> 音频隐写</h4>
+                            <div class="controls-grid">
+                                <button class="btn" onclick="stego.audioEcho()">
+                                    <i class="fas fa-wave-square"></i> 回声隐藏
+                                </button>
+                                <button class="btn" onclick="stego.phaseCoding()">
+                                    <i class="fas fa-sync-alt"></i> 相位编码
+                                </button>
+                                <button class="btn" onclick="stego.spreadSpectrum()">
+                                    <i class="fas fa-expand"></i> 扩频隐藏
+                                </button>
+                                <button class="btn" onclick="stego.audioAnalyze()">
+                                    <i class="fas fa-chart-line"></i> 音频分析
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 视频隐写 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-video"></i> 视频隐写</h4>
+                            <div class="controls-grid">
+                                <button class="btn" onclick="stego.videoFrame()">
+                                    <i class="fas fa-film"></i> 帧隐藏
+                                </button>
+                                <button class="btn" onclick="stego.motionVector()">
+                                    <i class="fas fa-arrows-alt"></i> 运动矢量隐藏
+                                </button>
+                                <button class="btn" onclick="stego.videoAnalyze()">
+                                    <i class="fas fa-chart-line"></i> 视频分析
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 文件隐写 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-file"></i> 文件隐写</h4>
+                            <div class="controls-grid">
+                                <button class="btn" onclick="stego.fileAppend()">
+                                    <i class="fas fa-plus"></i> 文件追加
+                                </button>
+                                <button class="btn" onclick="stego.fileSlack()">
+                                    <i class="fas fa-hdd"></i> 磁盘空闲空间
+                                </button>
+                                <button class="btn" onclick="stego.metadata()">
+                                    <i class="fas fa-info-circle"></i> 元数据隐藏
+                                </button>
+                                <button class="btn" onclick="stego.fileCarving()">
+                                    <i class="fas fa-cut"></i> 文件雕刻
+                                </button>
+                                <button class="btn" onclick="stego.fileAnalyze()">
+                                    <i class="fas fa-search"></i> 文件分析
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 网络隐写 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-network-wired"></i> 网络隐写</h4>
+                            <div class="controls-grid">
+                                <button class="btn" onclick="stego.networkTiming()">
+                                    <i class="fas fa-clock"></i> 时序通道
+                                </button>
+                                <button class="btn" onclick="stego.packetSize()">
+                                    <i class="fas fa-weight"></i> 包大小通道
+                                </button>
+                                <button class="btn" onclick="stego.protocolHeader()">
+                                    <i class="fas fa-heading"></i> 协议头部
+                                </button>
+                                <button class="btn" onclick="stego.dnsTunnel()">
+                                    <i class="fas fa-globe"></i> DNS隧道
+                                </button>
+                                <button class="btn" onclick="stego.icmpTunnel()">
+                                    <i class="fas fa-broadcast-tower"></i> ICMP隧道
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 隐写检测 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-search"></i> 隐写检测工具</h4>
+                            <div class="controls-grid">
+                                <button class="btn" onclick="stego.detectStego()">
+                                    <i class="fas fa-search"></i> 检测隐写
+                                </button>
+                                <button class="btn" onclick="stego.chiSquare()">
+                                    <i class="fas fa-chart-bar"></i> 卡方检测
+                                </button>
+                                <button class="btn" onclick="stego.rsAnalysis()">
+                                    <i class="fas fa-chart-line"></i> RS分析
+                                </button>
+                                <button class="btn" onclick="stego.samplePairs()">
+                                    <i class="fas fa-object-group"></i> 样本对分析
+                                </button>
+                                <button class="btn" onclick="stego.visualAttack()">
+                                    <i class="fas fa-eye"></i> 视觉攻击
+                                </button>
+                                <button class="btn" onclick="stego.statisticalAttack()">
+                                    <i class="fas fa-chart-pie"></i> 统计攻击
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 隐写分析设置 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-sliders-h"></i> 隐写分析设置</h4>
+                            <div class="controls-row">
+                                <select class="input-select" id="stegoMethod">
+                                    <option value="zero-width">零宽字符</option>
+                                    <option value="space">空格隐写</option>
+                                    <option value="lsb">LSB图像隐写</option>
+                                    <option value="audio">音频隐写</option>
+                                    <option value="file">文件隐写</option>
+                                </select>
+                                <span class="input-label">检测方法</span>
+                                <select class="input-select" id="stegoSensitivity">
+                                    <option value="low">低敏感度</option>
+                                    <option value="medium" selected>中敏感度</option>
+                                    <option value="high">高敏感度</option>
+                                    <option value="paranoid">极致敏感</option>
+                                </select>
+                                <span class="input-label">敏感度</span>
+                                <button class="btn btn-info" onclick="stego.analyzeAll()">
+                                    <i class="fas fa-play"></i> 全面分析
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 隐写工具 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-tools"></i> 隐写工具</h4>
+                            <div class="controls-grid">
+                                <button class="btn" onclick="stego.stegoBenchmark()">
+                                    <i class="fas fa-tachometer-alt"></i> 隐写基准测试
+                                </button>
+                                <button class="btn" onclick="stego.stegoCompare()">
+                                    <i class="fas fa-balance-scale"></i> 隐写比较
+                                </button>
+                                <button class="btn" onclick="stego.stegoReport()">
+                                    <i class="fas fa-file-export"></i> 生成报告
+                                </button>
+                                <button class="btn" onclick="stego.stegoClean()">
+                                    <i class="fas fa-broom"></i> 清理隐写
+                                </button>
+                                <button class="btn" onclick="stego.stegoHistory()">
+                                    <i class="fas fa-history"></i> 隐写历史
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 实用工具模块 -->
+                    <div class="tab-pane" id="utils-tab">
+                        <div class="tab-header">
+                            <h3><i class="fas fa-tools"></i> 实用工具模块</h3>
+                            <p>文本分析、格式转换、时间工具、数学工具、计算器、单位转换等实用工具</p>
+                        </div>
+                        
+                        <!-- 文本分析 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-chart-bar"></i> 文本分析工具</h4>
+                            <div class="controls-grid">
+                                <button class="btn" onclick="utils.countChars()">
+                                    <i class="fas fa-font"></i> 字符统计
+                                </button>
+                                <button class="btn" onclick="utils.countWords()">
+                                    <i class="fas fa-text"></i> 单词统计
+                                </button>
+                                <button class="btn" onclick="utils.countLines()">
+                                    <i class="fas fa-list"></i> 行数统计
+                                </button>
+                                <button class="btn" onclick="utils.textInfo()">
+                                    <i class="fas fa-info-circle"></i> 文本信息
+                                </button>
+                                <button class="btn" onclick="utils.analyzeText()">
+                                    <i class="fas fa-search"></i> 深度分析
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 格式转换 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-exchange-alt"></i> 格式转换工具</h4>
+                            <div class="controls-grid">
+                                <button class="btn" onclick="utils.formatJson()">
+                                    <i class="fas fa-brace"></i> JSON格式化
+                                </button>
+                                <button class="btn" onclick="utils.minifyJson()">
+                                    <i class="fas fa-compress"></i> JSON压缩
+                                </button>
+                                <button class="btn" onclick="utils.formatXml()">
+                                    <i class="fas fa-code"></i> XML格式化
+                                </button>
+                                <button class="btn" onclick="utils.minifyXml()">
+                                    <i class="fas fa-compress"></i> XML压缩
+                                </button>
+                                <button class="btn" onclick="utils.csvToJson()">
+                                    <i class="fas fa-table"></i> CSV转JSON
+                                </button>
+                                <button class="btn" onclick="utils.jsonToCsv()">
+                                    <i class="fas fa-table"></i> JSON转CSV
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 时间工具 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-clock"></i> 时间工具</h4>
+                            <div class="controls-row">
+                                <input type="datetime-local" class="input-datetime" id="datetimeInput">
+                                <span class="input-label">日期时间</span>
+                                <button class="btn" onclick="utils.convertTimezone()">
+                                    <i class="fas fa-globe"></i> 时区转换
+                                </button>
+                                <button class="btn" onclick="utils.calculateDuration()">
+                                    <i class="fas fa-hourglass"></i> 时间间隔
+                                </button>
+                                <button class="btn" onclick="utils.dateDiff()">
+                                    <i class="fas fa-calendar-minus"></i> 日期差
+                                </button>
+                                <button class="btn" onclick="utils.timeNow()">
+                                    <i class="fas fa-sync"></i> 当前时间
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 计算器 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-calculator"></i> 计算器工具</h4>
+                            <div class="controls-grid">
+                                <button class="btn" onclick="utils.scientificCalc()">
+                                    <i class="fas fa-calculator"></i> 科学计算器
+                                </button>
+                                <button class="btn" onclick="utils.programmerCalc()">
+                                    <i class="fas fa-laptop-code"></i> 程序员计算器
+                                </button>
+                                <button class="btn" onclick="utils.currencyCalc()">
+                                    <i class="fas fa-money-bill-wave"></i> 货币计算器
+                                </button>
+                                <button class="btn" onclick="utils.unitConverter()">
+                                    <i class="fas fa-balance-scale"></i> 单位转换器
+                                </button>
+                                <button class="btn" onclick="utils.dateCalc()">
+                                    <i class="fas fa-calendar"></i> 日期计算器
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 单位转换 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-ruler"></i> 单位转换工具</h4>
+                            <div class="controls-row">
+                                <select class="input-select" id="unitType">
+                                    <option value="length">长度</option>
+                                    <option value="weight">重量</option>
+                                    <option value="temperature">温度</option>
+                                    <option value="area">面积</option>
+                                    <option value="volume">体积</option>
+                                    <option value="speed">速度</option>
+                                </select>
+                                <span class="input-label">单位类型</span>
+                                <input type="number" class="input-number" id="unitValue" value="1" step="0.01">
+                                <span class="input-label">数值</span>
+                                <select class="input-select" id="unitFrom">
+                                    <option value="meter">米</option>
+                                    <option value="kilometer">千米</option>
+                                    <option value="mile">英里</option>
+                                </select>
+                                <i class="fas fa-arrow-right"></i>
+                                <select class="input-select" id="unitTo">
+                                    <option value="kilometer">千米</option>
+                                    <option value="meter">米</option>
+                                    <option value="mile">英里</option>
+                                </select>
+                                <button class="btn btn-primary" onclick="utils.convertUnits()">
+                                    <i class="fas fa-exchange-alt"></i> 转换
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 数学工具 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-square-root-alt"></i> 数学工具</h4>
+                            <div class="controls-grid">
+                                <button class="btn" onclick="utils.primeNumbers()">
+                                    <i class="fas fa-infinity"></i> 质数生成
+                                </button>
+                                <button class="btn" onclick="utils.fibonacci()">
+                                    <i class="fas fa-seedling"></i> 斐波那契数列
+                                </button>
+                                <button class="btn" onclick="utils.factorial()">
+                                    <i class="fas fa-exclamation"></i> 阶乘计算
+                                </button>
+                                <button class="btn" onclick="utils.combinations()">
+                                    <i class="fas fa-project-diagram"></i> 组合计算
+                                </button>
+                                <button class="btn" onclick="utils.permutations()">
+                                    <i class="fas fa-random"></i> 排列计算
+                                </button>
+                                <button class="btn" onclick="utils.statistics()">
+                                    <i class="fas fa-chart-line"></i> 统计计算
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 颜色工具 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-palette"></i> 颜色工具</h4>
+                            <div class="controls-grid">
+                                <button class="btn" onclick="utils.colorPicker()">
+                                    <i class="fas fa-eye-dropper"></i> 颜色选择器
+                                </button>
+                                <button class="btn" onclick="utils.colorConverter()">
+                                    <i class="fas fa-exchange-alt"></i> 颜色转换
+                                </button>
+                                <button class="btn" onclick="utils.colorBlind()">
+                                    <i class="fas fa-eye"></i> 色盲模拟
+                                </button>
+                                <button class="btn" onclick="utils.colorContrast()">
+                                    <i class="fas fa-adjust"></i> 对比度检查
+                                </button>
+                                <button class="btn" onclick="utils.colorPalette()">
+                                    <i class="fas fa-palette"></i> 调色板生成
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 二维码工具 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-qrcode"></i> 二维码工具</h4>
+                            <div class="controls-row">
+                                <input type="text" class="input-text" id="qrContent" placeholder="二维码内容" value="https://example.com">
+                                <span class="input-label">内容</span>
+                                <select class="input-select" id="qrSize">
+                                    <option value="128">128x128</option>
+                                    <option value="256" selected>256x256</option>
+                                    <option value="512">512x512</option>
+                                    <option value="1024">1024x1024</option>
+                                </select>
+                                <button class="btn btn-primary" onclick="utils.generateQR()">
+                                    <i class="fas fa-qrcode"></i> 生成二维码
+                                </button>
+                                <button class="btn btn-success" onclick="utils.scanQR()">
+                                    <i class="fas fa-camera"></i> 扫描二维码
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 条形码工具 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-barcode"></i> 条形码工具</h4>
+                            <div class="controls-grid">
+                                <button class="btn" onclick="utils.generateBarcode()">
+                                    <i class="fas fa-barcode"></i> 生成条形码
+                                </button>
+                                <button class="btn" onclick="utils.scanBarcode()">
+                                    <i class="fas fa-camera"></i> 扫描条形码
+                                </button>
+                                <button class="btn" onclick="utils.barcodeTypes()">
+                                    <i class="fas fa-list"></i> 条码类型
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 数据可视化 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-chart-pie"></i> 数据可视化</h4>
+                            <div class="controls-grid">
+                                <button class="btn" onclick="utils.chartGenerator()">
+                                    <i class="fas fa-chart-bar"></i> 图表生成器
+                                </button>
+                                <button class="btn" onclick="utils.dataPlot()">
+                                    <i class="fas fa-chart-line"></i> 数据绘图
+                                </button>
+                                <button class="btn" onclick="utils.wordCloud()">
+                                    <i class="fas fa-cloud"></i> 词云生成
+                                </button>
+                                <button class="btn" onclick="utils.networkGraph()">
+                                    <i class="fas fa-project-diagram"></i> 网络图
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 文件工具 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-file"></i> 文件工具</h4>
+                            <div class="controls-grid">
+                                <button class="btn" onclick="utils.fileInfo()">
+                                    <i class="fas fa-info-circle"></i> 文件信息
+                                </button>
+                                <button class="btn" onclick="utils.fileCompare()">
+                                    <i class="fas fa-balance-scale"></i> 文件比较
+                                </button>
+                                <button class="btn" onclick="utils.fileSplit()">
+                                    <i class="fas fa-cut"></i> 文件分割
+                                </button>
+                                <button class="btn" onclick="utils.fileMerge()">
+                                    <i class="fas fa-paste"></i> 文件合并
+                                </button>
+                                <button class="btn" onclick="utils.fileEncrypt()">
+                                    <i class="fas fa-lock"></i> 文件加密
+                                </button>
+                                <button class="btn" onclick="utils.fileDecrypt()">
+                                    <i class="fas fa-unlock"></i> 文件解密
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 网络工具 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-network-wired"></i> 网络工具</h4>
+                            <div class="controls-grid">
+                                <button class="btn" onclick="utils.ipCalculator()">
+                                    <i class="fas fa-calculator"></i> IP计算器
+                                </button>
+                                <button class="btn" onclick="utils.subnetCalculator()">
+                                    <i class="fas fa-network-wired"></i> 子网计算器
+                                </button>
+                                <button class="btn" onclick="utils.pingTool()">
+                                    <i class="fas fa-broadcast-tower"></i> Ping工具
+                                </button>
+                                <button class="btn" onclick="utils.whoisTool()">
+                                    <i class="fas fa-user"></i> Whois工具
+                                </button>
+                                <button class="btn" onclick="utils.dnsLookup()">
+                                    <i class="fas fa-globe"></i> DNS查询
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 系统工具 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-desktop"></i> 系统工具</h4>
+                            <div class="controls-grid">
+                                <button class="btn" onclick="utils.systemInfo()">
+                                    <i class="fas fa-info-circle"></i> 系统信息
+                                </button>
+                                <button class="btn" onclick="utils.browserInfo()">
+                                    <i class="fas fa-window-maximize"></i> 浏览器信息
+                                </button>
+                                <button class="btn" onclick="utils.screenInfo()">
+                                    <i class="fas fa-desktop"></i> 屏幕信息
+                                </button>
+                                <button class="btn" onclick="utils.storageInfo()">
+                                    <i class="fas fa-hdd"></i> 存储信息
+                                </button>
+                                <button class="btn" onclick="utils.performanceTest()">
+                                    <i class="fas fa-tachometer-alt"></i> 性能测试
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 网络工具模块 -->
+                    <div class="tab-pane" id="network-tab">
+                        <div class="tab-header">
+                            <h3><i class="fas fa-network-wired"></i> 网络工具模块</h3>
+                            <p>URL处理、证书分析、网络协议、DNS工具、网络诊断等网络相关工具</p>
+                        </div>
+                        
+                        <!-- URL 工具 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-link"></i> URL 处理工具</h4>
+                            <div class="controls-row">
+                                <input type="text" class="input-text" id="urlInput" placeholder="URL地址" value="https://example.com">
+                                <span class="input-label">URL</span>
+                                <button class="btn btn-primary" onclick="network.parseUrl()">
+                                    <i class="fas fa-search"></i> 解析URL
+                                </button>
+                                <button class="btn btn-success" onclick="network.encodeUrl()">
+                                    <i class="fas fa-arrow-up"></i> URL编码
+                                </button>
+                                <button class="btn btn-warning" onclick="network.decodeUrl()">
+                                    <i class="fas fa-arrow-down"></i> URL解码
+
+                                </button>
+                                <button class="btn btn-info" onclick="network.urlComponents()">
+                                    <i class="fas fa-cogs"></i> URL组件
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- DNS 工具 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-globe"></i> DNS 工具</h4>
+                            <div class="controls-grid">
+                                <button class="btn" onclick="network.dnsLookup()">
+                                    <i class="fas fa-search"></i> DNS查询
+                                </button>
+                                <button class="btn" onclick="network.reverseDns()">
+                                    <i class="fas fa-exchange-alt"></i> 反向DNS
+                                </button>
+                                <button class="btn" onclick="network.dnsRecords()">
+                                    <i class="fas fa-table"></i> DNS记录
+
+                                </button>
+                                <button class="btn" onclick="network.dnsCache()">
+                                    <i class="fas fa-history"></i> DNS缓存
+                                </button>
+                                <button class="btn" onclick="network.dnsSec()">
+                                    <i class="fas fa-shield-alt"></i> DNSSEC
+
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- IP 工具 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-laptop"></i> IP 地址工具</h4>
+                            <div class="controls-row">
+                                <input type="text" class="input-text" id="ipAddress" placeholder="IP地址" value="192.168.1.1">
+                                <span class="input-label">IP地址</span>
+                                <select class="input-select" id="ipType">
+                                    <option value="ipv4">IPv4</option>
+                                    <option value="ipv6">IPv6</option>
+                                </select>
+                                <button class="btn btn-primary" onclick="network.ipInfo()">
+                                    <i class="fas fa-info-circle"></i> IP信息
+
+                                </button>
+                                <button class="btn btn-success" onclick="network.subnetCalculator()">
+                                    <i class="fas fa-calculator"></i> 子网计算
+                                </button>
+                                <button class="btn btn-warning" onclick="network.ipConvert()">
+                                    <i class="fas fa-exchange-alt"></i> IP转换
+
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 网络协议 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-rss"></i> 网络协议工具</h4>
+                            <div class="controls-grid">
+                                <button class="btn" onclick="network.protocolAnalyzer()">
+                                    <i class="fas fa-search"></i> 协议分析
+
+                                </button>
+                                <button class="btn" onclick="network.httpHeaders()">
+                                    <i class="fas fa-heading"></i> HTTP头
+                                </button>
+                                <button class="btn" onclick="network.httpsCheck()">
+                                    <i class="fas fa-lock"></i> HTTPS检查
+
+                                </button>
+                                <button class="btn" onclick="network.sslCheck()">
+                                    <i class="fas fa-certificate"></i> SSL检查
+                                </button>
+                                <button class="btn" onclick="network.certificateInfo()">
+                                    <i class="fas fa-file-certificate"></i> 证书信息
+
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 网络诊断 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-stethoscope"></i> 网络诊断工具</h4>
+                            <div class="controls-grid">
+                                <button class="btn" onclick="network.pingTool()">
+                                    <i class="fas fa-broadcast-tower"></i> Ping
+
+                                </button>
+                                <button class="btn" onclick="network.traceroute()">
+                                    <i class="fas fa-route"></i> Traceroute
+                                </button>
+                                <button class="btn" onclick="network.portScan()">
+                                    <i class="fas fa-door-closed"></i> 端口扫描
+
+                                </button>
+                                <button class="btn" onclick="network.networkScan()">
+                                    <i class="fas fa-wifi"></i> 网络扫描
+                                </button>
+                                <button class="btn" onclick="network.bandwidthTest()">
+                                    <i class="fas fa-tachometer-alt"></i> 带宽测试
+
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 网络安全 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-shield-alt"></i> 网络安全工具</h4>
+                            <div class="controls-grid">
+                                <button class="btn" onclick="network.firewallTest()">
+                                    <i class="fas fa-fire"></i> 防火墙测试
+
+                                </button>
+                                <button class="btn" onclick="network.vpnCheck()">
+                                    <i class="fas fa-user-shield"></i> VPN检查
+                                </button>
+                                <button class="btn" onclick="network.proxyCheck()">
+                                    <i class="fas fa-user-secret"></i> 代理检查
+
+                                </button>
+                                <button class="btn" onclick="network.privacyCheck()">
+                                    <i class="fas fa-eye-slash"></i> 隐私检查
+                                </button>
+                                <button class="btn" onclick="network.securityHeaders()">
+                                    <i class="fas fa-shield-virus"></i> 安全头检查
+
+
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 网络嗅探 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-search"></i> 网络嗅探工具</h4>
+                            <div class="controls-grid">
+                                <button class="btn" onclick="network.packetSniffer()">
+                                    <i class="fas fa-broadcast-tower"></i> 数据包嗅探
+                                </button>
+                                <button class="btn" onclick="network.trafficAnalyzer()">
+                                    <i class="fas fa-chart-line"></i> 流量分析
+                                </button>
+                                <button class="btn" onclick="network.protocolDecoder()">
+                                    <i class="fas fa-code"></i> 协议解码
+
+                                </button>
+                                <button class="btn" onclick="network.networkLog()">
+                                    <i class="fas fa-history"></i> 网络日志
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- API 工具 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-plug"></i> API 工具</h4>
+                            <div class="controls-row">
+                                <input type="text" class="input-text" id="apiEndpoint" placeholder="API端点" value="https://api.example.com/data">
+                                <span class="input-label">端点</span>
+                                <select class="input-select" id="apiMethod">
+                                    <option value="GET">GET</option>
+                                    <option value="POST">POST</option>
+                                    <option value="PUT">PUT</option>
+                                    <option value="DELETE">DELETE</option>
+                                </select>
+                                <span class="input-label">方法</span>
+                                <button class="btn btn-primary" onclick="network.testApi()">
+                                    <i class="fas fa-play"></i> 测试API
+
+                                </button>
+                                <button class="btn btn-success" onclick="network.apiDocumentation()">
+                                    <i class="fas fa-book"></i> API文档
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 网络设置 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-cogs"></i> 网络设置工具</h4>
+                            <div class="controls-row">
+                                <select class="input-select" id="networkProfile">
+                                    <option value="auto">自动检测</option>
+                                    <option value="home">家庭网络</option>
+                                    <option value="office">办公室网络</option>
+                                    <option value="public">公共网络</option>
+                                </select>
+                                <span class="input-label">网络配置</span>
+                                <input type="number" class="input-number" id="mtuSize" value="1500" min="576" max="1500">
+                                <span class="input-label">MTU大小</span>
+                                <button class="btn btn-info" onclick="network.applySettings()">
+                                    <i class="fas fa-check"></i> 应用设置
+                                </button>
+                                <button class="btn btn-warning" onclick="network.resetNetwork()">
+                                    <i class="fas fa-redo"></i> 重置网络
+
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 网络监控 -->
+                        <div class="category-section">
+                            <h4><i class="fas fa-chart-line"></i> 网络监控工具</h4>
+                            <div class="controls-grid">
+                                <button class="btn" onclick="network.realTimeTraffic()">
+                                    <i class="fas fa-broadcast-tower"></i> 实时流量
+                                </button>
+                                <button class="btn" onclick="network.connectionMonitor()">
+                                    <i class="fas fa-wifi"></i> 连接监控
+
+                                </button>
+                                <button class="btn" onclick="network.performanceMonitor()">
+                                    <i class="fas fa-tachometer-alt"></i> 性能监控
+                                </button>
+                                <button class="btn" onclick="network.networkReport()">
+                                    <i class="fas fa-file-export"></i> 网络报告
+
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧输出区域 -->
+            <div class="output-section">
+                <div class="section-header">
+                    <h3><i class="fas fa-file-export"></i> 输出结果区</h3>
+                    <div class="section-actions">
+                        <button class="btn btn-sm" id="clearOutputBtn">
+                            <i class="fas fa-trash"></i> 清空
+                        </button>
+                        <button class="btn btn-sm btn-success" id="copyOutputBtn">
+                            <i class="fas fa-copy"></i> 复制
+                        </button>
+                        <button class="btn btn-sm btn-primary" id="saveOutputBtn">
+                            <i class="fas fa-save"></i> 保存
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="textarea-container">
+                    <textarea id="outputText" readonly placeholder="处理结果将显示在这里...&#10;支持复制、导出、保存等操作"></textarea>
+                    <div class="textarea-footer">
+                        <div class="output-info">
+                            <span id="outputInfo">0 字符</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="result-actions">
+                    <div class="result-tabs">
+                        <button class="result-tab active" data-result="text">
+                            <i class="fas fa-text-height"></i> 文本
+                        </button>
+                        <button class="result-tab" data-result="hex">
+                            <i class="fas fa-hashtag"></i> Hex
+                        </button>
+                        <button class="result-tab" data-result="binary">
+                            <i class="fas fa-stream"></i> 二进制
+                        </button>
+                        <button class="result-tab" data-result="json">
+                            <i class="fas fa-code"></i> JSON
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="history-section">
+                    <h4><i class="fas fa-history"></i> 历史记录</h4>
+                    <div class="history-list" id="historyList">
+                        <!-- 历史记录将通过JS动态生成 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部信息栏 -->
+        <footer class="app-footer">
+            <div class="footer-left">
+                <span><i class="fas fa-info-circle"></i> 智能密码工具箱 v9.0</span>
+                <span class="footer-separator">|</span>
+                <span><i class="fas fa-user"></i> 用户: 游客</span>
+                <span class="footer-separator">|</span>
+                <span><i class="fas fa-clock"></i> 上次更新: <span id="lastUpdate">刚刚</span></span>
+            </div>
+            <div class="footer-right">
+                <span><i class="fas fa-terminal"></i> 状态: <strong>在线</strong></span>
+                <span class="footer-separator">|</span>
+                <span><i class="fas fa-shield-alt"></i> 安全模式: <strong>已启用</strong></span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Toast通知 -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- 模态框容器 -->
+    <div class="modal-overlay" id="modalOverlay"></div>
+
+    <!-- 外部JavaScript文件 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    
+    <!-- 核心JS文件 -->
+    <script src="js/core.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/ai.js"></script>
+    <script src="js/ctf.js"></script>
+    <script src="js/classic.js"></script>
+    <script src="js/modern.js"></script>
+    <script src="js/encode.js"></script>
+    <script src="js/hash.js"></script>
+    <script src="js/crypto.js"></script>
+    <script src="js/stego.js"></script>
+    <script src="js/network.js"></script>
+    <script src="js/utils.js"></script>
+    
+    <!-- 应用初始化 -->
+    <script src="js/app.js"></script>
+    
+    <!-- 工具提示 -->
+    <script>
+        // 初始化工具提示
+        document.addEventListener('DOMContentLoaded', function() {
+            const tooltips = document.querySelectorAll('[title]');
+            tooltips.forEach(el => {
+                el.addEventListener('mouseenter', function(e) {
+                    const tooltip = document.createElement('div');
+                    tooltip.className = 'tooltip';
+                    tooltip.textContent = this.title;
+                    tooltip.style.top = (e.clientY + 10) + 'px';
+                    tooltip.style.left = (e.clientX + 10) + 'px';
+                    document.body.appendChild(tooltip);
+                    
+                    this._tooltip = tooltip;
+                });
+                
+                el.addEventListener('mouseleave', function() {
+                    if (this._tooltip) {
+                        this._tooltip.remove();
+                        this._tooltip = null;
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

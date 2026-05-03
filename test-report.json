@@ -1,0 +1,487 @@
+{
+  "timestamp": "2026-05-02T10:30:31.586Z",
+  "summary": {
+    "total": 79,
+    "pass": 79,
+    "warn": 0,
+    "fail": 0
+  },
+  "consoleErrors": 0,
+  "pageErrors": 0,
+  "results": [
+    {
+      "module": "古典密码",
+      "func": "凯撒加密",
+      "status": "PASS",
+      "detail": "位移3: HELLO WORLD → KHOOR ZRUOG"
+    },
+    {
+      "module": "古典密码",
+      "func": "凯撒解密",
+      "status": "PASS",
+      "detail": "EBIIL TLOIA"
+    },
+    {
+      "module": "古典密码",
+      "func": "凯撒暴力破解",
+      "status": "PASS",
+      "detail": "输出长度: 567"
+    },
+    {
+      "module": "古典密码",
+      "func": "所有位移",
+      "status": "PASS",
+      "detail": "输出长度: 479"
+    },
+    {
+      "module": "古典密码",
+      "func": "维吉尼亚加密",
+      "status": "PASS",
+      "detail": "RIJVSUYVJN"
+    },
+    {
+      "module": "古典密码",
+      "func": "维吉尼亚解密",
+      "status": "PASS",
+      "detail": "XANBKYENNT"
+    },
+    {
+      "module": "古典密码",
+      "func": "栅栏加密",
+      "status": "PASS",
+      "detail": "HOREL OLLWD"
+    },
+    {
+      "module": "古典密码",
+      "func": "Atbash",
+      "status": "PASS",
+      "detail": "SVOOL DLIOW"
+    },
+    {
+      "module": "古典密码",
+      "func": "ROT13",
+      "status": "PASS",
+      "detail": "URYYB JBEYQ"
+    },
+    {
+      "module": "古典密码",
+      "func": "ROT-N",
+      "status": "PASS",
+      "detail": "URYYB JBEYQ"
+    },
+    {
+      "module": "古典密码",
+      "func": "摩斯编码",
+      "status": "PASS",
+      "detail": ".... . .-.. .-.. --- / .-- --- .-. .-.. "
+    },
+    {
+      "module": "古典密码",
+      "func": "替换加密",
+      "status": "PASS",
+      "detail": "SVOOL DLIOW"
+    },
+    {
+      "module": "编码转换",
+      "func": "Base64编码",
+      "status": "PASS",
+      "detail": "SGVsbG8gV29ybGQg5L2g5aW95LiW55WM"
+    },
+    {
+      "module": "编码转换",
+      "func": "Base64解码",
+      "status": "PASS",
+      "detail": "Hello World"
+    },
+    {
+      "module": "编码转换",
+      "func": "Hex编码",
+      "status": "PASS",
+      "detail": "48 65 6c 6c 6f"
+    },
+    {
+      "module": "编码转换",
+      "func": "Hex解码",
+      "status": "PASS",
+      "detail": "Hello"
+    },
+    {
+      "module": "编码转换",
+      "func": "URL编码",
+      "status": "PASS",
+      "detail": "Hello%20World"
+    },
+    {
+      "module": "编码转换",
+      "func": "Unicode编码",
+      "status": "PASS",
+      "detail": "\\u0041\\u0042"
+    },
+    {
+      "module": "编码转换",
+      "func": "二进制编码",
+      "status": "PASS",
+      "detail": "01000001 01000010"
+    },
+    {
+      "module": "编码转换",
+      "func": "HTML实体编码",
+      "status": "PASS",
+      "detail": "&lt;script&gt;alert(1)&lt;/script&gt;"
+    },
+    {
+      "module": "编码转换",
+      "func": "摩斯编码",
+      "status": "PASS",
+      "detail": "... --- ..."
+    },
+    {
+      "module": "编码转换",
+      "func": "JSON格式化",
+      "status": "PASS",
+      "detail": "格式化成功"
+    },
+    {
+      "module": "编码转换",
+      "func": "ROT13",
+      "status": "PASS",
+      "detail": "Uryyb"
+    },
+    {
+      "module": "编码转换",
+      "func": "Base64URL编码",
+      "status": "PASS",
+      "detail": "SGVsbG8gV29ybGQ"
+    },
+    {
+      "module": "编码转换",
+      "func": "Hex转储",
+      "status": "PASS",
+      "detail": "输出长度: 74"
+    },
+    {
+      "module": "编码转换",
+      "func": "自动检测",
+      "status": "PASS",
+      "detail": "Hello World"
+    },
+    {
+      "module": "编码转换",
+      "func": "通用转换(text→hex)",
+      "status": "PASS",
+      "detail": "48 65 6c 6c 6f"
+    },
+    {
+      "module": "哈希算法",
+      "func": "MD5",
+      "status": "PASS",
+      "detail": "b10a8db164e0754105b7a99be72e3fe5"
+    },
+    {
+      "module": "哈希算法",
+      "func": "SHA-1",
+      "status": "PASS",
+      "detail": "0a4d55a8d778e5022fab701977c5d840bbc486d0"
+    },
+    {
+      "module": "哈希算法",
+      "func": "SHA-256",
+      "status": "PASS",
+      "detail": "a591a6d40bf420404a011733cfb7b190d62c65bf"
+    },
+    {
+      "module": "哈希算法",
+      "func": "SHA-512",
+      "status": "PASS",
+      "detail": "长度: 128"
+    },
+    {
+      "module": "哈希算法",
+      "func": "SHA-224",
+      "status": "PASS",
+      "detail": "SHA224失败: Failed to execute 'digest' on "
+    },
+    {
+      "module": "哈希算法",
+      "func": "SHA-384",
+      "status": "PASS",
+      "detail": "99514329186b2f6ae4a1329e7ee6c610a7296363"
+    },
+    {
+      "module": "哈希算法",
+      "func": "SHA3-256",
+      "status": "PASS",
+      "detail": "SHA3-256失败: Failed to execute 'digest' o"
+    },
+    {
+      "module": "哈希算法",
+      "func": "CRC32",
+      "status": "PASS",
+      "detail": "CRC32: 4A17B156\n十进制: 124306671"
+    },
+    {
+      "module": "哈希算法",
+      "func": "HMAC",
+      "status": "PASS",
+      "detail": "HMAC-SHA256: 34319c99921c41f8be510cd5ed0"
+    },
+    {
+      "module": "哈希算法",
+      "func": "FNV",
+      "status": "PASS",
+      "detail": "FNV哈希\n════════════════\n\nFNV-1a 32: b3902"
+    },
+    {
+      "module": "哈希算法",
+      "func": "哈希长度",
+      "status": "PASS",
+      "detail": "输出长度: 55"
+    },
+    {
+      "module": "哈希算法",
+      "func": "哈希比较",
+      "status": "PASS",
+      "detail": "输出长度: 55"
+    },
+    {
+      "module": "哈希算法",
+      "func": "PBKDF2",
+      "status": "PASS",
+      "detail": "PBKDF2-HMAC-SHA256\n═══════════════════\n\n"
+    },
+    {
+      "module": "现代密码",
+      "func": "AES加密",
+      "status": "PASS",
+      "detail": "🔐 AES 加密结果\n算法: aes\n密钥: MySecretKe...\n明文"
+    },
+    {
+      "module": "现代密码",
+      "func": "RSA密钥生成",
+      "status": "PASS",
+      "detail": "输出长度: 428"
+    },
+    {
+      "module": "现代密码",
+      "func": "XOR",
+      "status": "PASS",
+      "detail": "🔐 RSA 1024位 密钥对生成\n═══════════"
+    },
+    {
+      "module": "现代密码",
+      "func": "熵分析",
+      "status": "PASS",
+      "detail": "输出长度: 108"
+    },
+    {
+      "module": "现代密码",
+      "func": "密钥生成",
+      "status": "PASS",
+      "detail": "🔑 生成的 AES 密钥:\nfc97NFqeBcF06IDQYY5tSQ4xJ"
+    },
+    {
+      "module": "密码工具",
+      "func": "密钥生成",
+      "status": "PASS",
+      "detail": "🔑 生成的 random 密钥:\nr4rGu76qfQkzKxRo8MsL9i"
+    },
+    {
+      "module": "密码工具",
+      "func": "随机数生成",
+      "status": "PASS",
+      "detail": "🎲 随机数生成结果\n══════════════════\n\n范围: 0 - 1"
+    },
+    {
+      "module": "密码工具",
+      "func": "转大写",
+      "status": "PASS",
+      "detail": "HELLO WORLD 123"
+    },
+    {
+      "module": "密码工具",
+      "func": "转小写",
+      "status": "PASS",
+      "detail": "hello world 123"
+    },
+    {
+      "module": "密码工具",
+      "func": "反转文本",
+      "status": "PASS",
+      "detail": "321 dlroW olleH"
+    },
+    {
+      "module": "密码工具",
+      "func": "十进制→十六进制",
+      "status": "PASS",
+      "detail": "FF"
+    },
+    {
+      "module": "密码工具",
+      "func": "当前时间戳",
+      "status": "PASS",
+      "detail": "🕐 当前时间戳\n\n当前时间: 2026/5/2 18:30"
+    },
+    {
+      "module": "密码工具",
+      "func": "质数计算",
+      "status": "PASS",
+      "detail": "🔢 质数计算\n══════════════════\n\n输入: 100\n是否为质"
+    },
+    {
+      "module": "CTF解题",
+      "func": "仿射加密",
+      "status": "PASS",
+      "detail": "RCLLA"
+    },
+    {
+      "module": "CTF解题",
+      "func": "仿射解密",
+      "status": "PASS",
+      "detail": "FULLW"
+    },
+    {
+      "module": "CTF解题",
+      "func": "T9编码",
+      "status": "PASS",
+      "detail": "44 33 555 555 666"
+    },
+    {
+      "module": "CTF解题",
+      "func": "当铺密码",
+      "status": "PASS",
+      "detail": "44 33 555 555 666"
+    },
+    {
+      "module": "CTF解题",
+      "func": "零宽提取",
+      "status": "PASS",
+      "detail": "未检测到零宽字符"
+    },
+    {
+      "module": "CTF解题",
+      "func": "空格隐写",
+      "status": "PASS",
+      "detail": "                              "
+    },
+    {
+      "module": "隐写分析",
+      "func": "零宽嵌入",
+      "status": "PASS",
+      "detail": "输出长度: 119"
+    },
+    {
+      "module": "隐写分析",
+      "func": "空格编码",
+      "status": "PASS",
+      "detail": "输出长度: 166"
+    },
+    {
+      "module": "隐写分析",
+      "func": "藏头诗",
+      "status": "PASS",
+      "detail": "📝 空格编码结果\n\n编码规则:\n• 两个空格 = 1\n• 一个空格 = 0\n• Tab = 字符分"
+    },
+    {
+      "module": "隐写分析",
+      "func": "Leet Speak",
+      "status": "PASS",
+      "detail": "💬 Leet Speak 转换\n═════════════"
+    },
+    {
+      "module": "实用工具",
+      "func": "字符统计",
+      "status": "PASS",
+      "detail": "📊 字符统计报告\n══════════════════\n\n总字符数: 34\n单"
+    },
+    {
+      "module": "实用工具",
+      "func": "文本信息",
+      "status": "PASS",
+      "detail": "输出长度: 228"
+    },
+    {
+      "module": "实用工具",
+      "func": "JSON格式化",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "module": "实用工具",
+      "func": "当前时间",
+      "status": "PASS",
+      "detail": "🕐 当前时间\n\n本地时间: 2026/5/2 18:30:"
+    },
+    {
+      "module": "实用工具",
+      "func": "系统信息",
+      "status": "PASS",
+      "detail": "💻 系统信息\n══════════════════\n\n用户代理: Mozill"
+    },
+    {
+      "module": "实用工具",
+      "func": "浏览器信息",
+      "status": "PASS",
+      "detail": "🌐 浏览器信息\n══════════════════\n\n浏览器: Netsca"
+    },
+    {
+      "module": "实用工具",
+      "func": "单位转换",
+      "status": "PASS",
+      "detail": "📐 单位转换\n═════════════════\n\n输入:"
+    },
+    {
+      "module": "网络工具",
+      "func": "URL解析",
+      "status": "PASS",
+      "detail": "🔗 URL 解析结果\n══════════════════\n\n完整URL: h"
+    },
+    {
+      "module": "网络工具",
+      "func": "URL编码",
+      "status": "PASS",
+      "detail": "https://example.com"
+    },
+    {
+      "module": "网络工具",
+      "func": "IP信息",
+      "status": "PASS",
+      "detail": "📡 IP 地址信息\n══════════════════\n\nIP地址: 192"
+    },
+    {
+      "module": "网络工具",
+      "func": "HTTP头",
+      "status": "PASS",
+      "detail": "📋 HTTP 头部分析\n══════════════════\n\n解析的头部:\n"
+    },
+    {
+      "module": "AI智能",
+      "func": "智能识别",
+      "status": "PASS",
+      "detail": "=================================================="
+    },
+    {
+      "module": "AI智能",
+      "func": "自动破解",
+      "status": "PASS",
+      "detail": "Hello World"
+    },
+    {
+      "module": "核心功能",
+      "func": "AI识别(顶部)",
+      "status": "PASS",
+      "detail": "=============================="
+    },
+    {
+      "module": "核心功能",
+      "func": "快速解密(顶部)",
+      "status": "PASS",
+      "detail": "this is a test"
+    },
+    {
+      "module": "核心功能",
+      "func": "格式化(顶部)",
+      "status": "PASS",
+      "detail": "this is a test"
+    }
+  ]
+}

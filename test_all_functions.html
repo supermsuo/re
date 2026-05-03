@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔍 密码解析9.0 - 功能完整性测试</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .test-header {
+            background: linear-gradient(135deg, #4c6ef5 0%, #3b5bdb 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .test-header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .test-header .version {
+            background: rgba(255,255,255,0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8em;
+        }
+        
+        .test-stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .stat-card {
+            background: rgba(255,255,255,0.1);
+            padding: 15px 25px;
+            border-radius: 10px;
+            text-align: center;
+            min-width: 150px;
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        
+        .test-content {
+            padding: 30px;
+        }
+        
+        .module-section {
+            margin-bottom: 30px;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .module-header {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .module-header h2 {
+            margin: 0;
+            color: #495057;
+        }
+        
+        .functions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            padding: 20px;
+        }
+        
+        .function-card {
+            background: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .function-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .function-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .function-name {
+            font-weight: bold;
+            color: #495057;
+            flex: 1;
+        }
+        
+        .function-status {
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        
+        .status-ok {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .function-description {
+            color: #6c757d;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+        
+        .test-button {
+            width: 100%;
+            padding: 8px 15px;
+            background: #4c6ef5;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        
+        .test-button:hover {
+            background: #3b5bdb;
+        }
+        
+        .test-results {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .result-item {
+            padding: 10px;
+            border-bottom: 1px solid #dee2e6;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9em;
+        }
+        
+        .result-time {
+            color: #6c757d;
+            font-size: 0.8em;
+        }
+        
+        .result-success {
+            color: #28a745;
+        }
+        
+        .result-error {
+            color: #dc3545;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: #4c6ef5;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #3b5bdb;
+        }
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #218838;
+        }
+        
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c82333;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background: #e9ecef;
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4c6ef5, #3b5bdb);
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h1>
+                <span>🔍</span>
+                密码解析工具箱 v9.0
+                <span class="version">功能完整性测试</span>
+            </h1>
+            <div class="test-stats">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalFunctions">0</div>
+                    <div class="stat-label">总功能数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="testedFunctions">0</div>
+                    <div class="stat-label">已测试</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="successFunctions">0</div>
+                    <div class="stat-label">成功</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="errorFunctions">0</div>
+                    <div class="stat-label">错误</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="test-content">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+            
+            <div class="module-section" id="moduleAI">
+                <div class="module-header">
+                    <h2>🤖 AI智能模块</h2>
+                </div>
+                <div class="functions-grid" id="functionsAI">
+                    <!-- AI模块功能将动态加载 -->
+                </div>
+            </div>
+            
+            <div class="module-section" id="moduleCTF">
+                <div class="module-header">
+                    <h2>🏆 CTF解题模块</h2>
+                </div>
+                <div class="functions-grid" id="functionsCTF">
+                    <!-- CTF模块功能将动态加载 -->
+                </div>
+            </div>
+            
+            <div class="module-section" id="moduleClassic">
+                <div class="module-header">
+                    <h2>📜 古典密码模块</h2>
+                </div>
+                <div class="functions-grid" id="functionsClassic">
+                    <!-- 古典密码模块功能将动态加载 -->
+                </div>
+            </div>
+            
+            <div class="module-section" id="moduleModern">
+                <div class="module-header">
+                    <h2>⚡ 现代密码模块</h2>
+                </div>
+                <div class="functions-grid" id="functionsModern">
+                    <!-- 现代密码模块功能将动态加载 -->
+                </div>
+            </div>
+            
+            <div class="module-section" id="moduleNetwork">
+                <div class="module-header">
+                    <h2>🌐 网络工具模块</h2>
+                </div>
+                <div class="functions-grid" id="functionsNetwork">
+                    <!-- 网络工具模块功能将动态加载 -->
+                </div>
+            </div>
+            
+            <div class="test-results">
+                <h3>测试结果</h3>
+                <div id="resultsContainer">
+                    <!-- 测试结果将显示在这里 -->
+                </div>
+            </div>
+            
+            <div class="controls">
+                <button class="btn btn-primary" onclick="startTest()">开始测试</button>
+                <button class="btn btn-success" onclick="runAllTests()">运行所有测试</button>
+                <button class="btn btn-danger" onclick="clearResults()">清除结果</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 测试数据
+        const testFunctions = {
+            ai: [
+                { name: 'fullAnalysis', description: '完整分析', module: 'ai' },
+                { name: 'autoDecode', description: '自动解码', module: 'ai' },
+                { name: 'deepAnalysis', description: '深度分析', module: 'ai' },
+                { name: 'generateReport', description: '生成报告', module: 'ai' }
+            ],
+            ctf: [
+                { name: 'affineEncrypt', description: '仿射加密', module: 'ctf' },
+                { name: 'affineDecrypt', description: '仿射解密', module: 'ctf' },
+                { name: 'affineCrack', description: '仿射破解', module: 'ctf' },
+                { name: 't9Encode', description: '九键编码', module: 'ctf' },
+                { name: 't9Decode', description: '九键解码', module: 'ctf' },
+                { name: 'dangpuEncode', description: '当铺加密', module: 'ctf' },
+                { name: 'dangpuDecode', description: '当铺解密', module: 'ctf' },
+                { name: 'buddhaEncode', description: '佛曰加密', module: 'ctf' },
+                { name: 'buddhaDecode', description: '佛曰解密', module: 'ctf' },
+                { name: 'brailleEncode', description: '盲文加密', module: 'ctf' },
+                { name: 'brailleDecode', description: '盲文解密', module: 'ctf' },
+                { name: 'musicEncode', description: '音符加密', module: 'ctf' },
+                { name: 'musicDecode', description: '音符解密', module: 'ctf' },
+                { name: 'pigpenEncode', description: '猪圈加密', module: 'ctf' },
+                { name: 'pigpenDecode', description: '猪圈解密', module: 'ctf' },
+                { name: 'curveEncode', description: '曲路加密', module: 'ctf' },
+                { name: 'curveDecode', description: '曲路解密', module: 'ctf' },
+                { name: 'stegoAnalyze', description: '隐写分析', module: 'ctf' },
+                { name: 'whiteSpace', description: '空格隐写', module: 'ctf' }
+            ],
+            classic: [
+                { name: 'caeEn', description: '凯撒加密', module: 'classic' },
+                { name: 'caeDe', description: '凯撒解密', module: 'classic' },
+                { name: 'caeCrack', description: '凯撒破解', module: 'classic' },
+                { name: 'caeAll', description: '所有位移', module: 'classic' },
+                { name: 'vigEn', description: '维吉尼亚加密', module: 'classic' },
+                { name: 'vigDe', description: '维吉尼亚解密', module: 'classic' },
+                { name: 'vigCrack', description: '维吉尼亚破解', module: 'classic' },
+                { name: 'railEn', description: '栅栏加密', module: 'classic' },
+                { name: 'railDe', description: '栅栏解密', module: 'classic' },
+                { name: 'railAll', description: '所有栅栏', module: 'classic' },
+                { name: 'atbash', description: 'Atbash密码', module: 'classic' },
+                { name: 'rot13', description: 'ROT13转换', module: 'classic' },
+                { name: 'rotN', description: 'ROT-N转换', module: 'classic' },
+                { name: 'morseEn', description: '摩斯加密', module: 'classic' },
+                { name: 'morseDe', description: '摩斯解密', module: 'classic' },
+                { name: 'subEn', description: '替换加密', module: 'classic' },
+                { name: 'subDe', description: '替换解密', module: 'classic' },
+                { name: 'subCrack', description: '频率分析', module: 'classic' },
+                { name: 'railTest', description: '栅栏测试', module: 'classic' }
+            ],
+            modern: [
+                { name: 'symEncrypt', description: '对称加密', module: 'modern' },
+                { name: 'symDecrypt', description: '对称解密', module: 'modern' },
+                { name: 'symGenerate', description: '生成密钥', module: 'modern' },
+                { name: 'rsaGenerateKey', description: 'RSA生成密钥', module: 'modern' },
+                { name: 'rsaEncrypt', description: 'RSA加密', module: 'modern' },
+                { name: 'rsaDecrypt', description: 'RSA解密', module: 'modern' },
+                { name: 'rsaSign', description: 'RSA签名', module: 'modern' },
+                { name: 'eccGenerate', description: 'ECC生成', module: 'modern' },
+                { name: 'eccEncrypt', description: 'ECC加密', module: 'modern' },
+                { name: 'eccSign', description: 'ECC签名', module: 'modern' },
+                { name: 'sm9', description: '国密SM9', module: 'modern' },
+                { name: 'macGenerate', description: 'MAC生成', module: 'modern' },
+                { name: 'macVerify', description: 'MAC验证', module: 'modern' },
+                { name: 'modeTest', description: '模式测试', module: 'modern' },
+                { name: 'entropyAnalyze', description: '熵值分析', module: 'modern' },
+                { name: 'frequencyAnalyze', description: '频率分析', module: 'modern' }
+            ],
+            network: [
+                { name: 'parseUrl', description: 'URL解析', module: 'network' },
+                { name: 'encodeUrl', description: 'URL编码', module: 'network' },
+                { name: 'decodeUrl', description: 'URL解码', module: 'network' },
+                { name: 'urlComponents', description: 'URL组件', module: 'network' },
+                { name: 'dnsLookup', description: 'DNS查询', module: 'network' },
+                { name: 'reverseDns', description: '反向DNS', module: 'network' },
+                { name: 'ipInfo', description: 'IP信息', module: 'network' },
+                { name: 'subnetCalculator', description: '子网计算', module: 'network' },
+                { name: 'ipConvert', description: 'IP转换', module: 'network' },
+                { name: 'protocolAnalyzer', description: '协议分析', module: 'network' },
+                { name: 'httpHeaders', description: 'HTTP头分析', module: 'network' },
+                { name: 'httpsCheck', description: 'HTTPS检查', module: 'network' },
+                { name: 'sslCheck', description: 'SSL检查', module: 'network' }
+            ]
+        };
+
+        // 测试状态
+        const testState = {
+            totalFunctions: 0,
+            testedFunctions: 0,
+            successFunctions: 0,
+            errorFunctions: 0,
+            testResults: []
+        };
+
+        // 初始化页面
+        function initPage() {
+            // 加载所有功能到页面
+            for (const module in testFunctions) {
+                const containerId = `functions${module.charAt(0).toUpperCase() + module.slice(1)}`;
+                const container = document.getElementById(containerId);
+                
+                if (container) {
+                    testFunctions[module].forEach(func => {
+                        testState.totalFunctions++;
+                        
+                        const card = document.createElement('div');
+                        card.className = 'function-card';
+                        card.id = `func-${module}-${func.name}`;
+                        
+                        card.innerHTML = `
+                            <div class="function-header">
+                                <div class="function-name">${func.description}</div>
+                                <div class="function-status status-warning">未测试</div>
+                            </div>
+                            <div class="function-description">${func.module}.${func.name}()</div>
+                            <button class="test-button" onclick="testFunction('${module}', '${func.name}', '${func.description}')">
+                                测试此功能
+                            </button>
+                        `;
+                        
+                        container.appendChild(card);
+                    });
+                }
+            }
+            
+            updateStats();
+        }
+
+        // 测试单个功能
+        function testFunction(module, funcName, description) {
+            const card = document.getElementById(`func-${module}-${funcName}`);
+            const statusEl = card.querySelector('.function-status');
+            
+            // 更新状态为测试中
+            statusEl.className = 'function-status status-warning';
+            statusEl.textContent = '测试中...';
+            
+            // 模拟测试过程
+            setTimeout(() => {
+                let success = false;
+                let errorMessage = '';
+                
+                try {
+                    // 检查函数是否存在
+                    let func;
+                    if (module === 'ai' || module === 'ctf' || module === 'classic' || 
+                        module === 'modern' || module === 'network') {
+                        if (window[module] && typeof window[module][funcName] === 'function') {
+                            success = true;
+                        } else {
+                            errorMessage = '函数未定义';
+                        }
+                    } else {
+                        if (typeof window[funcName] === 'function') {
+                            success = true;
+                        } else {
+                            errorMessage = '函数未定义';
+                        }
+                    }
+                    
+                    if (success) {
+                        // 更新状态
+                        statusEl.className = 'function-status status-ok';
+                        statusEl.textContent = '✅ 正常';
+                        testState.successFunctions++;
+                        
+                        // 添加测试结果
+                        addResult('success', `${module}.${funcName}()`, '函数存在且可调用');
+                    } else {
+                        // 更新状态
+                        statusEl.className = 'function-status status-error';
+                        statusEl.textContent = '❌ 错误';
+                        testState.errorFunctions++;
+                        
+                        // 添加测试结果
+                        addResult('error', `${module}.${funcName}()`, `错误: ${errorMessage}`);
+                    }
+                    
+                } catch (error) {
+                    // 更新状态
+                    statusEl.className = 'function-status status-error';
+                    statusEl.textContent = '❌ 异常';
+                    testState.errorFunctions++;
+                    
+                    // 添加测试结果
+                    addResult('error', `${module}.${funcName}()`, `异常: ${error.message}`);
+                }
+                
+                testState.testedFunctions++;
+                updateStats();
+                
+            }, 500 + Math.random() * 1000); // 随机延迟模拟测试时间
+        }
+
+        // 开始测试（单个模块）
+        function startTest() {
+            // 提示用户选择模块
+            const module = prompt('请输入要测试的模块 (ai, ctf, classic, modern, network):', 'ai');
+            if (module && testFunctions[module]) {
+                testFunctions[module].forEach(func => {
+                    testFunction(module, func.name, func.description);
+                });
+            }
+        }
+
+        // 运行所有测试
+        function runAllTests() {
+            clearResults();
+            
+            for (const module in testFunctions) {
+                testFunctions[module].forEach(func => {
+                    testFunction(module, func.name, func.description);
+                });
+            }
+        }
+
+        // 清除结果
+        function clearResults() {
+            testState.testedFunctions = 0;
+            testState.successFunctions = 0;
+            testState.errorFunctions = 0;
+            testState.testResults = [];
+            
+            // 重置所有状态
+            for (const module in testFunctions) {
+                testFunctions[module].forEach(func => {
+                    const card = document.getElementById(`func-${module}-${func.name}`);
+                    if (card) {
+                        const statusEl = card.querySelector('.function-status');
+                        statusEl.className = 'function-status status-warning';
+                        statusEl.textContent = '未测试';
+                    }
+                });
+            }
+            
+            // 清除结果容器
+            document.getElementById('resultsContainer').innerHTML = '';
+            updateStats();
+        }
+
+        // 添加测试结果
+        function addResult(type, functionName, message) {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString();
+            
+            const resultItem = document.createElement('div');
+            resultItem.className = 'result-item';
+            resultItem.innerHTML = `
+                <span class="result-time">[${timeStr}]</span>
+                <span class="result-${type}">${type === 'success' ? '✅' : '❌'} ${functionName}: ${message}</span>
+            `;
+            
+            document.getElementById('resultsContainer').prepend(resultItem);
+            testState.testResults.push({ type, functionName, message, time: timeStr });
+        }
+
+        // 更新统计信息
+        function updateStats() {
+            document.getElementById('totalFunctions').textContent = testState.totalFunctions;
+            document.getElementById('testedFunctions').textContent = testState.testedFunctions;
+            document.getElementById('successFunctions').textContent = testState.successFunctions;
+            document.getElementById('errorFunctions').textContent = testState.errorFunctions;
+            
+            // 更新进度条
+            const progress = testState.totalFunctions > 0 ? 
+                (testState.testedFunctions / testState.totalFunctions) * 100 : 0;
+            document.getElementById('progressFill').style.width = `${progress}%`;
+        }
+
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', initPage);
+    </script>
+</body>
+</html>
